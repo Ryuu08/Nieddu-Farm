@@ -3,8 +3,14 @@ import Phaser from "phaser";
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   private readonly speed = 200;
 
-  constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
-    super(scene, x, y, texture);
+  constructor(
+    scene: Phaser.Scene,
+    x: number,
+    y: number,
+    texture: string,
+    frame?: string | number,
+  ) {
+    super(scene, x, y, texture, frame);
     scene.add.existing(this);
     scene.physics.add.existing(this);
     this.setCollideWorldBounds(true);
@@ -26,6 +32,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       body.setVelocityY(this.speed);
     }
 
-    body.velocity.normalize().scale(this.speed);
+    if (body.velocity.length() > 0) {
+      body.velocity.normalize().scale(this.speed);
+    }
   }
 }

@@ -106,3 +106,14 @@ Features planned for a later stage include:
 The repository currently contains the Phaser starter project and the first
 organized gameplay entities, systems, data definitions, and shared types. The
 main gameplay loop is still under development.
+
+## Temporary test assets
+
+The `src/assets/test-assets/` directory contains a small set of assets copied
+from the previous prototype. They are used only to test the current gameplay
+structure and are not the final art direction. They will be replaced with
+original project assets later.
+
+The music and sound files are registered in `src/GameData.ts` and can be
+controlled through `src/AudioManager.ts`. They are part of the current project
+audio setup; the temporary label applies only to the copied visual assets.

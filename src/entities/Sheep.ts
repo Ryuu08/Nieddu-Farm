@@ -16,8 +16,14 @@ export default class Sheep extends Phaser.Physics.Arcade.Sprite {
     ready: false,
   };
 
-  constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
-    super(scene, x, y, texture);
+  constructor(
+    scene: Phaser.Scene,
+    x: number,
+    y: number,
+    texture: string,
+    frame?: string | number,
+  ) {
+    super(scene, x, y, texture, frame);
     scene.add.existing(this);
     scene.physics.add.existing(this);
   }

@@ -31,6 +31,7 @@ interface gameData {
   fonts?: Array<FontAsset>,
   webfonts?: Array<FontAsset>,
   bitmapfonts?: Array<BitmapfontAsset>,
+  audioSettings?: AudioSettings,
 
 }
 
@@ -83,6 +84,17 @@ interface SoundAsset {
   paths: Array<string>;
 }
 
+interface AudioItem {
+  name: string;
+  volume: number;
+}
+
+interface AudioSettings {
+  music?: Array<AudioItem>;
+  sfx?: Array<AudioItem>;
+  voices?: Array<AudioItem>;
+}
+
 interface AudioSpriteAsset {
   name: string;
   jsonpath: string;
@@ -101,6 +113,5 @@ interface AtlasAsset {
   imagepath: string;
   jsonpath: string;
 }
-
 
 

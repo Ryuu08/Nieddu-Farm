@@ -1,5 +1,12 @@
 import Phaser from "phaser";
 
+export interface PlayerMovementKeys {
+  up: Phaser.Input.Keyboard.Key;
+  down: Phaser.Input.Keyboard.Key;
+  left: Phaser.Input.Keyboard.Key;
+  right: Phaser.Input.Keyboard.Key;
+}
+
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   private readonly speed = 200;
 
@@ -16,19 +23,27 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.setCollideWorldBounds(true);
   }
 
-  public move(cursors: Phaser.Types.Input.Keyboard.CursorKeys): void {
+  public move(
+    cursors: Phaser.Types.Input.Keyboard.CursorKeys,
+    movementKeys?: PlayerMovementKeys,
+  ): void {
     const body = this.body as Phaser.Physics.Arcade.Body;
     body.setVelocity(0);
 
-    if (cursors.left.isDown) {
+    const leftPressed = cursors.left.isDown || movementKeys?.left.isDown === true;
+    const rightPressed = cursors.right.isDown || movementKeys?.right.isDown === true;
+    const upPressed = cursors.up.isDown || movementKeys?.up.isDown === true;
+    const downPressed = cursors.down.isDown || movementKeys?.down.isDown === true;
+
+    if (leftPressed) {
       body.setVelocityX(-this.speed);
-    } else if (cursors.right.isDown) {
+    } else if (rightPressed) {
       body.setVelocityX(this.speed);
     }
 
-    if (cursors.up.isDown) {
+    if (upPressed) {
       body.setVelocityY(-this.speed);
-    } else if (cursors.down.isDown) {
+    } else if (downPressed) {
       body.setVelocityY(this.speed);
     }
 

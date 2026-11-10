@@ -1,0 +1,114 @@
+{
+  "planHash": "82970cb791f41226f67abd63e7a820679f8bd40cff0477fb7d973cd7ba8ab32c",
+  "phase": "baseline",
+  "recordedAtUtc": "2026-11-06T10:54:01.1005040Z",
+  "retryCount": 0,
+  "resetBaseline": true,
+  "complete": true,
+  "result": {
+    "setupSucceeded": true,
+    "setupDurationMs": 6263,
+    "setupFailureOutput": null,
+    "assertions": [
+      {
+        "name": "production-build",
+        "kind": "process",
+        "verificationMethod": "exit-code",
+        "passed": true,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": 0,
+        "outputSample": "npm warn Unknown env config \u0022scripts-prepend-node-path\u0022. This will stop working in the next major version of npm. See \u0060npm help npmrc\u0060 for supported config options.\n\n\u003E phaser-project-template@3.90.0 build\n\u003E rimraf dist \u0026\u0026 webpack --config webpack/webpack.prod.js\n\n\u003Cs\u003E [webpack.Progress] 0% \n\n\u003Cs\u003E [webpack.Progress] 1% setup before run\n\u003Cs\u003E [webpack.Progress] 1% setup before run NodeEnvironmentPlugin\n\u003Cs\u003E [webpack.Progress] 1% setup before run\n\u003Cs\u003E [webpack.Progress] 2% setup run\n\u003Cs\u003E [webpack.Progress] 2% setup run webpack-cli\n\u003Cs\u003E [webpack.Progress] 2% setup run\n\u003Cs\u003E [webpack.Progress] 4% setup normal module factory\n\u003Cs\u003E [webpack.Progress] 4% setup normal module factory\n\u003Cs\u003E [webpack.Progress] 5% setup context module factory\n\u003Cs\u003E [webpack.Progress] 5% setup context module factory\n\u003Cs\u003E [webpack.Progress] 6% setup before compile\n\u003Cs\u003E [webpack.Progress] 6% setup before compile\n\u003Cs\u003E [webpack.Progress] 7% setup compile\n\u003Cs\u003E [webpack.Progress] 7% setup compile ExternalsPlugin\n\u003Cs\u003E [webpack.Progress] 7% setup compile\n\u003Cs\u003E [webpack.Progress] 8% setup compilation\n\u003Cs\u003E [webpack.Progress] 8% setup compilation mini-css-extract-plugin\n\u003Cs\u003E [webpack.Progress] 8% setup compilation HtmlWebpackPlugin\n\u003Cs\u003E [webpack.Progress] 8% setup compilation CopyPlugin\n\u003Cs\u003E [webpack.Progress] 8% setup compilation ArrayPushCallbackChunkFormatPlugin\n\u003Cs\u003E [webpack.Progress] 8% setup compilation JsonpChunkLoadingPlugin\n\u003Cs\u003E [webpack.Progress] 8% setup compilation StartupChunkDependenciesPlugin\n\u003Cs\u003E [webpack.Progress] 8% setup compilation ImportScriptsChunkLoadingPlugin\n\u003Cs\u003E [webpack.Progress] 8% setup compilation FetchCompileAsyncWasmPlugin\n\u003Cs\u003E [webpack.Progress] 8% setup compilation HtmlModulesPlugin\n\u003Cs\u003E [webpack.Progress] 8% setup compilation WorkerAndWorkletPlugin\n\u003Cs\u003E [webpack.Progress] 8% setup compilation SplitChunksPlugin\n\u003Cs\u003E [webpack.Progress] 8% setup compilation ResolverCachePlugin\n\u003Cs\u003E [webpack.Progress] 8% setup compilation\n\u003Cs\u003E [webpack.Progress] 9% setup compilation\n\u003Cs\u003E [webpack.Progress] 9% setup compilation mini-css-extract-plugin\n\u003Cs\u003E [webpack.Progress] 9% setup compilation HotModuleReplacementPlugin\n\u003Cs\u003E [webpack.Progress] 9% setup compilation ProvidePlugin\n\u003Cs\u003E [webpack.Progress] 9% setup compilation ProgressPlugin\n\u003Cs\u003E [webpack.Progress] 9% setup compilation WebpackObfuscatorPlugin\n\u003Cs\u003E [webpack.Progress] 9% setup compilation ExternalsPlugin\n\u003Cs\u003E [webpack.Progress] 9% setup compilation ChunkPrefetchPreloadPlugin\n\u003Cs\u003E [webpack.Progress] 9% setup compilation ResourceHintPlugin\n\u003Cs\u003E [webpack.Progress] 9% setup compilation JavascriptModulesPlugin\n\u003Cs\u003E [webpack.Progress] 9% setup compilation JsonModulesPlugin\n\u003Cs\u003E [webpack.Progress] 9% setup compilation AssetModulesPlugin\n\u003Cs\u003E [webpack.Progress] 9% setup compilation AsyncWebAssemblyModulesPlugin\n\u003Cs\u003E [webpack.Progress] 9% setup compilation CssModulesPlugin\n\u003Cs\u003E [webpack.Progress] 9% setup compilation HtmlModulesPlugin\n\u003Cs\u003E [webpack.Progress] 9% setup compilation EntryPlugin\n\u003Cs\u003E [webpack.Progress] 9% setup compilation EntryPlugin\n\u003Cs\u003E [webpack.Progress] 9% setup compilation RuntimePlugin\n\u003Cs\u003E [webpack.Progress] 9% setup compilation InferAsyncModulesPlugin\n\u003Cs\u003E [webpack.Progress] 9% setup compilation DataUriPlugin\n\u003Cs\u003E [webpack.Progress] 9% setup compilation FileUriPlugin\n\u003Cs\u003E [webpack.Progress] 9% setup compilation CompatibilityPlugin\n\u003Cs\u003E [webpack.Progress] 9% setup compilation ESMModulesPlugin\n\u003Cs\u003E [webpack.Progress] 9% setup compilation AMDPlugin\n\u003Cs\u003E [webpack.Progress] 9% setup compilation RequireJsStuffPlugin\n\u003Cs\u003E [webpack.Progress] 9% setup compilation CommonJsPlugin\n\u003Cs\u003E [webpack.Progress] 9% setup compilation LoaderPlugin\n\u003Cs\u003E [webpack.Progress] 9% setup compilation LoaderPlugin\n\u003Cs\u003E [webpack.Progress] 9% setup compilation NodeStuffPlugin\n\u003Cs\u003E [webpack.Progress] 9% setup compilation APIPlugin\n\u003Cs\u003E [webpack.Progress] 9% setup compilation ExportsInfoApiPlugin\n\u003Cs\u003E [webpack.Progress] 9% setup compilation WebpackIsIncludedPlugin\n\u003Cs\u003E [webpack.Progress] 9% setup compilation ConstPlugin\n\u003Cs\u003E [webpack.Progress] 9% setup compilation UseStrictPlugin\n\u003Cs\u003E [webpack.Progress] 9% setup compilation RequireIncludePlugin\n\u003Cs\u003E [webpack.Progress] 9% setup comp\n\u2026[truncated]",
+        "durationMs": 8045
+      },
+      {
+        "name": "dev-server-serves-home",
+        "kind": "http-probe",
+        "verificationMethod": "http-status",
+        "passed": true,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": null,
+        "outputSample": "HTTP 200\n\u003C!DOCTYPE html\u003E\n\u003Chtml lang=\u0022en\u0022\u003E\n  \u003Chead\u003E\n    \u003Cmeta charset=\u0022UTF-8\u0022 /\u003E\n    \u003Cmeta http-equiv=\u0022X-UA-Compatible\u0022 content=\u0022ie=edge\u0022 /\u003E\n    \u003Cmeta name=\u0022theme-color\u0022 content=\u0022#000000\u0022 /\u003E\n    \u003Clink rel=\u0022manifest\u0022 href=\u0022./manifest.json\u0022 /\u003E\n    \u003Cmeta name=\u0022mobile-web-app-capable\u0022 content=\u0022yes\u0022 /\u003E\n    \u003Cmeta name=\u0022apple-mobile-web-app-capable\u0022 content=\u0022yes\u0022 /\u003E\n    \u003Cmeta name=\u0022application-name\u0022 content=\u0022\u0022 /\u003E\n    \u003Cmeta name=\u0022apple-mobile-web-app-title\u0022 content=\u0022\u0022 /\u003E\n    \u003Cmeta name=\u0022msapplication-starturl\u0022 content=\u0022./\u0022 /\u003E\n    \u003Clink rel=\u0022icon\u0022 type=\u0022image/png\u0022 sizes=\u0022192x192\u0022 href=\u0022./assets/icons/icons-192.png\u0022 /\u003E\n    \u003Clink rel=\u0022apple-touch-icon\u0022 type=\u0022image/png\u0022 sizes=\u0022192x192\u0022 href=\u0022./assets/icons/icons-192.png\u0022 /\u003E\n    \u003Clink rel=\u0022icon\u0022 type=\u0022image/png\u0022 sizes=\u0022512x512\u0022 href=\u0022./assets/icons/icons-512.png\u0022 /\u003E\n    \u003Clink rel=\u0022apple-touch-icon\u0022 type=\u0022image/png\u0022 sizes=\u0022512x512\u0022 href=\u0022./assets/icons/icons-512.png\u0022 /\u003E\n    \u003Cmeta name=\u0022viewport\u0022 content=\u0022initial-scale=1, maximum-scale=1, user-scalable=0, minimal-ui\u0022  /\u003E\n    \u003Cmeta property=\u0022og:title\u0022 content=\u0022\u0022 /\u003E\n    \u003Cmeta property=\u0022og:type\u0022 content=\u0022article\u0022 /\u003E\n    \u003Cmeta property=\u0022og:url\u0022 content=\u0022\u0022 /\u003E\n    \u003Cmeta property=\u0022og:image\u0022 content=\u0022\u0022 /\u003E\n    \u003Cmeta property=\u0022og:image:type\u0022 content=\u0022image/jpeg\u0022 /\u003E\n    \u003Cmeta property=\u0022og:image:width\u0022 content=\u0022\u0022 /\u003E\n    \u003Cmeta property=\u0022og:image:height\u0022 content=\u0022\u0022 /\u003E\n    \u003Cmeta property=\u0022og:description\u0022 content=\u0022\u0022 /\u003E\n    \u003Clink rel=\u0022icon\u0022 type=\u0022image/png\u0022 sizes=\u002232x32\u0022 href=\u0022/assets/icons/favicon-32x32.png\u0022\u003E\n    \u003Clink rel=\u0022icon\u0022 type=\u0022image/png\u0022 sizes=\u002216x16\u0022 href=\u0022/assets/icons/favicon-16x16.png\u0022\u003E\n    \u003Clink rel=\u0022mask-icon\u0022 href=\u0022/safari-pinned-tab.svg\u0022 color=\u0022#5bbad5\u0022\u003E\n    \u003Cmeta name=\u0022msapplication-TileColor\u0022 content=\u0022#da532c\u0022\u003E\n    \u003Cmeta name=\u0022theme-color\u0022 content=\u0022#ffffff\u0022\u003E\n    \u003Clink rel=\u0022shortcut icon\u0022 href=\u0022./favicon.ico\u0022 type=\u0022image/x-icon\u0022 /\u003E\n    \u003Ctitle\u003EPhaser Game JAM\u003C/title\u003E\n  \u003Cscript defer src=\u0022runtime.bundle.js\u0022\u003E\u003C/script\u003E\u003Cscript defer src=\u0022vendors.bundle.js\u0022\u003E\u003C/script\u003E\u003Cscript defer src=\u0022style.bundle.js\u0022\u003E\u003C/script\u003E\u003Cscript defer src=\u0022playground.bundle.js\u0022\u003E\u003C/script\u003E\u003Clink href=\u0022style.e71d03da5c4bb9b437b2.css\u0022 rel=\u0022stylesheet\u0022\u003E\u003C/head\u003E\n\n  \u003Cbody class=\u0022playground\u0022\u003E\n     \u003Ch1\u003EPlayground\u003C/h1\u003E\n    \u003Cdiv id=\u0022result\u0022\u003E\u003C/div\u003E\n  \u003C/body\u003E\n\u003C/html\u003E\n\n--- server output ---\nnpm warn Unknown env config \u0022scripts-prepend-node-path\u0022. This will stop working in the next major version of npm. See \u0060npm help npmrc\u0060 for supported config options.\n\n\u003E phaser-project-template@3.90.0 start\n\u003E webpack serve --open --config webpack/webpack.dev.js --no-open\n\n\u003Cw\u003E [webpack-dev-server] \u0022hot: true\u0022 automatically applies HMR plugin, you don\u0027t have to add it manually to your webpack configuration.\n\u003Cs\u003E [webpack.Progress] 3% setup watch run\n\u003Cs\u003E [webpack.Progress] 3% setup watch run webpack-cli\n\u003Cs\u003E [webpack.Progress] 3% setup watch run webpack-dev-middleware\n\u003Cs\u003E [webpack.Progress] 3% setup watch run\n\u003Cs\u003E [webpack.Progress] 4% setup normal module factory\n\u003Cs\u003E [webpack.Progress] 4% setup normal module factory\n\u003Cs\u003E [webpack.Progress] 5% setup context module factory\n\u003Cs\u003E [webpack.Progress] 5% setup context module factory\n\u003Cs\u003E [webpack.Progress] 6% setup before compile\n\u003Cs\u003E [webpack.Progress] 6% setup before compile\n\u003Cs\u003E [webpack.Progress] 7% setup compile\n\u003Cs\u003E [webpack.Progress] 7% setup compile ExternalsPlugin\n\u003Cs\u003E [webpack.Progress] 7% setup compile\n\u003Cs\u003E [webpack.Progress] 8% setup compilation\n\u003Cs\u003E [webpack.Progress] 8% setup compilation mini-css-extract-plugin\n\u003Cs\u003E [webpack.Progress] 8% setup compilation HtmlWebpackPlugin\n\u003Cs\u003E [webpack.Progress] 8% setup compilation CopyPlugin\n\u003Cs\u003E [webpack.Progress] 8% setup compilation HtmlWebpackPlugin\n\u003Cs\u003E [webpack.Progress] 8% setup compilation ArrayPushCallbackChunkFormatPlugin\n\u003Cs\u003E [webpack.Progress] 8% setup compilation JsonpChunkLoadingPlugin\n\u003Cs\u003E [webpack.Progress] 8% setup compilation StartupChunkDependenciesPlugin\n\u003Cs\u003E [webpack.Progress] 8% setup compilation ImportScriptsChunkLoadingPlugin\n\u003Cs\u003E [webpack.Progress] 8% setup compilation FetchCompileAsyncWasmPlugin\n\u003Cs\u003E [webpack.Progress] 8% setup compilation HtmlModulesPlugin\n\u003Cs\u003E [webpack.Progress] 8% setup compilation Wor\n\u2026[truncated]",
+        "durationMs": 6383
+      }
+    ],
+    "executions": [
+      {
+        "source": "setup[0]",
+        "resolvedExecutable": "/usr/local/bin/npm",
+        "args": [
+          "ci"
+        ],
+        "cwd": "/Users/nael/Documents/project/nieddu-farm",
+        "env": {},
+        "prependPath": [],
+        "platform": "darwin",
+        "nodeExecutable": "/usr/local/bin/node",
+        "nodeVersion": "v24.21.0",
+        "packageManager": "npm",
+        "packageManagerExecutable": "/usr/local/bin/npm",
+        "packageManagerVersion": "11.19.0",
+        "cleanup": {
+          "RootProcessId": 61085,
+          "Completed": true,
+          "ProcessesObserved": 1,
+          "ProcessesTerminated": 0,
+          "Failure": null
+        }
+      },
+      {
+        "source": "production-build",
+        "resolvedExecutable": "/usr/local/bin/npm",
+        "args": [
+          "run",
+          "build"
+        ],
+        "cwd": "/Users/nael/Documents/project/nieddu-farm",
+        "env": {},
+        "prependPath": [],
+        "platform": "darwin",
+        "nodeExecutable": "/usr/local/bin/node",
+        "nodeVersion": "v24.21.0",
+        "packageManager": "npm",
+        "packageManagerExecutable": "/usr/local/bin/npm",
+        "packageManagerVersion": "11.19.0",
+        "cleanup": {
+          "RootProcessId": 61197,
+          "Completed": true,
+          "ProcessesObserved": 1,
+          "ProcessesTerminated": 0,
+          "Failure": null
+        }
+      },
+      {
+        "source": "dev-server-serves-home",
+        "resolvedExecutable": "/usr/local/bin/npm",
+        "args": [
+          "run",
+          "start",
+          "--",
+          "--no-open"
+        ],
+        "cwd": "/Users/nael/Documents/project/nieddu-farm",
+        "env": {},
+        "prependPath": [],
+        "platform": "darwin",
+        "nodeExecutable": "/usr/local/bin/node",
+        "nodeVersion": "v24.21.0",
+        "packageManager": "npm",
+        "packageManagerExecutable": "/usr/local/bin/npm",
+        "packageManagerVersion": "11.19.0",
+        "cleanup": {
+          "RootProcessId": 61233,
+          "Completed": true,
+          "ProcessesObserved": 1,
+          "ProcessesTerminated": 1,
+          "Failure": null
+        }
+      }
+    ]
+  }
+}

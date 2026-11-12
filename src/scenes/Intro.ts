@@ -11,15 +11,15 @@ export default class Intro extends Phaser.Scene {
 
   private _music!: Phaser.Sound.BaseSound;
 
-  // Dimensioni testo
+  // Text dimensions.
   private readonly TITLE_SIZE = 48;
   private readonly BUTTON_SIZE = 30;
 
-  // Colori (coerenza UI)
+  // Colors for UI consistency.
   private readonly TITLE_COLOR = "#4fa4c1";
   private readonly BUTTON_COLOR = "#ffffff";
 
-  // FONT
+  // Font.
   private readonly UI_FONT = "Early_GameBoy";
 
 
@@ -32,7 +32,7 @@ export default class Intro extends Phaser.Scene {
   }
 
   preload() {
-    // Attendiamo che il font pixel sia pronto prima del create()
+    // Wait until the pixel font is ready before create().
     const fontPromises = [
       document.fonts.load(`${this.TITLE_SIZE}px ${this.UI_FONT}`),
       document.fonts.load(`${this.BUTTON_SIZE}px ${this.UI_FONT}`),
@@ -44,7 +44,7 @@ export default class Intro extends Phaser.Scene {
           .catch(() => resolve());
     });
 
-    // Blocca Phaser finché i font non sono pronti
+    // Pause Phaser until the fonts are ready.
     this.load.addFile(
         new (class extends Phaser.Loader.File {
           constructor(loader: Phaser.Loader.LoaderPlugin) {
@@ -59,7 +59,7 @@ export default class Intro extends Phaser.Scene {
   }
   create() {
 
-    // Pulizia stato: quando torni al menu, chiudiamo eventuali scene residue.
+    // Clean up leftover scenes when returning to the menu.
     this.scene.stop("Hud");
     this.scene.stop("Pause");
     this.scene.stop("Setting");
@@ -71,7 +71,7 @@ export default class Intro extends Phaser.Scene {
     this.createTitle();
     this.createButtons();
 
-    // Avvia la musica di intro in loop usando la key `intro_music`.
+    // Start the intro music in a loop using the `intro_music` key.
     const introKey = "intro_music";
     if (this.cache.audio.exists(introKey)) {
       this._music = (this.sound.get(introKey) as Phaser.Sound.BaseSound) ?? this.sound.add(introKey, { loop: true, volume: 1 });

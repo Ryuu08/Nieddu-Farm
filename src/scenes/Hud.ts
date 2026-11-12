@@ -36,11 +36,12 @@ export default class Hud extends Phaser.Scene {
 
   private updateDisplay(): void {
     const inventory = this.registry.get("playerInventory");
+    const currencyLabel = this.registry.get("currencyLabel") ?? "Coins";
     const productionStatus = this.registry.get("productionStatus") ?? "";
     const hudMessage = this.registry.get("hudMessage") ?? "";
 
     if (inventory) {
-      this.inventoryText.setText(formatInventory(inventory));
+      this.inventoryText.setText(formatInventory(inventory, currencyLabel));
     }
     this.statusText.setText(`${productionStatus} | ${hudMessage}`);
   }

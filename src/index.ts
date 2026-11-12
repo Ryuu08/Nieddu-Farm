@@ -1,25 +1,25 @@
-//importiamo la libreria phaser
+// Import Phaser.
 import "phaser";
-//importiamo le nostre scene
+// Import the game scenes.
 import Boot from "./scenes/Boot";
 import Hud from "./scenes/Hud";
 import Preloader from "./scenes/Preloader";
 import GamePlay from "./scenes/GamePlay";
 import GameOver from "./scenes/GameOver";
 import Intro from "./scenes/Intro";
-//importiamo GameData che contiene i valori globali del gioco
+import Store from "./scenes/Store";
+import Laboratory from "./scenes/Laboratory";
+// Import GameData containing the global game values.
 import { GameData } from "./GameData";
 
-//il listener per l'evento load della pagina
-//questo evento viene lanciato quando la pagina è stata caricata
-//e tutti gli elementi della pagina sono disponibili
+// Listen for the page load event.
+// The event fires when the page and all its elements are available.
 window.addEventListener("load", () => {
 
 
-  //creiamo un oggetto di configurazione per il gioco
-  //questo oggetto viene passato al costruttore di Phaser.Game
-  // e contiene i parametri di configurazione del gioco
-  // come il tipo di rendering, le dimensioni del canvas, le scene, ecc.
+  // Create the game configuration object.
+  // It is passed to the Phaser.Game constructor and contains the
+  // renderer, canvas dimensions, scenes, and other settings.
   const config: Phaser.Types.Core.GameConfig = {
     type: Phaser.WEBGL,
     backgroundColor: GameData.globals.bgColor,
@@ -36,7 +36,9 @@ window.addEventListener("load", () => {
       Preloader,
       Intro,
       GamePlay,
-      GameOver
+      GameOver,
+      Store,
+      Laboratory
     ],
     physics: {
       default: "arcade",
@@ -53,7 +55,7 @@ window.addEventListener("load", () => {
     },
   };
 
-  //inizializziamo il gioco passando la configurazione
+  // Initialize the game with the configuration.
   const game = new Phaser.Game(config);
 
 });

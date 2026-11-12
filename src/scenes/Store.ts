@@ -1,8 +1,11 @@
+import { ERAS } from "../data/EraData";
+
 export default class Store extends Phaser.Scene {
     // UI references.
     private background!: Phaser.GameObjects.Image;
     private storePanel!: Phaser.GameObjects.Container;
     private closeButton!: Phaser.GameObjects.Text;
+    private currentEraIndex = 0;
 
     // Player inventory synchronized with the registry.
     private playerInventory = {
@@ -84,7 +87,41 @@ export default class Store extends Phaser.Scene {
 
     init() {
         console.log("Store.init() - Inizializzazione Store");
+        const savedEraIndex = this.registry.get('eraIndex');
+        if (typeof savedEraIndex === 'number' && Number.isInteger(savedEraIndex)) {
+            this.currentEraIndex = Phaser.Math.Clamp(savedEraIndex, 0, ERAS.length - 1);
+        }
+        this.addEraProduct();
         this.loadInventoryFromRegistry();
+    }
+
+    private addEraProduct(): void {
+        this.products = this.products.filter(
+            (product) => product.id !== 'nextEra' && product.id !== 'pecoraNera',
+        );
+
+        if (this.currentEraIndex < ERAS.length - 1) {
+            this.products.push({
+                id: 'nextEra',
+                name: 'PROSSIMA ERA',
+                priceFormaggio: 10,
+                priceCoperte: 8,
+                description: `Sblocca: ${ERAS[this.currentEraIndex + 1].name}`,
+                icon: 'ERA',
+                image: 'nuraghe-test',
+            });
+        } else {
+            this.products.push({
+                id: 'pecoraNera',
+                name: 'PECORA NERA',
+                priceFormaggio: 10,
+                priceCoperte: 8,
+                description: 'Pecora speciale e rara',
+                icon: 'PN',
+                minPecore: 5,
+                image: 'nera',
+            });
+        }
     }
 
     preload() {
@@ -416,6 +453,11 @@ export default class Store extends Phaser.Scene {
             case 'pecoraNera':
                 this.playerInventory.pecoreNere += 1;
                 this.playerInventory.pecore += 1;
+                this.registry.set('victory', true);
+                break;
+            case 'nextEra':
+                this.currentEraIndex += 1;
+                this.registry.set('eraIndex', this.currentEraIndex);
                 break;
         }
 
@@ -427,6 +469,12 @@ export default class Store extends Phaser.Scene {
 
         // Success message.
         this.showMessage(`${product.name} ACQUISTATO!`, 0x00ff00);
+
+        if (product.id === 'pecoraNera') {
+            this.scene.stop('GamePlay');
+            this.scene.stop('Hud');
+            this.scene.start('Victory');
+        }
 
         // Purchase sound, when available.
         if (this.sound.get('purchase')) {

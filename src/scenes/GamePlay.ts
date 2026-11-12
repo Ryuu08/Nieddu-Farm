@@ -14,6 +14,7 @@ export default class GamePlay extends Phaser.Scene {
   private storeKey!: Phaser.Input.Keyboard.Key;
   private laboratoryKey!: Phaser.Input.Keyboard.Key;
   private eraKey!: Phaser.Input.Keyboard.Key;
+  private escapeKey!: Phaser.Input.Keyboard.Key;
   private eraIndex = 0;
   private farmBackground!: Phaser.GameObjects.Image;
   private shearCooldownUntil = 0;
@@ -21,7 +22,7 @@ export default class GamePlay extends Phaser.Scene {
   private isNight = false;
   private dayNumber = 1;
   private nightCullWeights = { zero: 50, one: 30, two: 20 };
-  private static readonly SHEAR_COOLDOWN_MS = 1_000;
+  private static readonly SHEAR_COOLDOWN_MS = 3_000;
   private static readonly DAY_DURATION_MS = 30_000;
   private static readonly NIGHT_DURATION_MS = 10_000;
   private readonly inventory = createDefaultInventory();
@@ -33,6 +34,7 @@ export default class GamePlay extends Phaser.Scene {
   }
 
   create(): void {
+    this.shearCooldownUntil = 0;
     this.createTemporaryFarm();
 
     this.player = new Player(this, 320, 420, "player-test", 0);
@@ -57,15 +59,28 @@ export default class GamePlay extends Phaser.Scene {
     this.storeKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.P);
     this.laboratoryKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.L);
     this.eraKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.T);
+    this.escapeKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+    this.escapeKey.on("down", () => this.openPauseMenu());
     this.inventorySystem = new InventorySystem(this.inventory);
 
     this.syncHud("Move with WASD or arrows. Press E/F near a sheep. Press T to change era.");
     this.scene.launch("Hud");
+    this.scene.bringToTop("Hud");
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       if (this.scene.isActive("Hud")) {
         this.scene.stop("Hud");
       }
     });
+  }
+
+  private openPauseMenu(): void {
+    if (this.scene.isActive("Pause")) {
+      return;
+    }
+
+    this.scene.pause("GamePlay");
+    this.scene.launch("Pause");
+    this.scene.bringToTop("Pause");
   }
 
   update(time: number, delta: number): void {
@@ -116,9 +131,11 @@ export default class GamePlay extends Phaser.Scene {
   }
 
   private changeEra(): void {
+    // Development shortcut: cycle through eras without using the Store.
     this.eraIndex = (this.eraIndex + 1) % ERAS.length;
     const era = ERAS[this.eraIndex];
     this.farmBackground.setTexture(era.backgroundKey);
+    this.registry.set("eraIndex", this.eraIndex);
     this.syncHud(`Era changed: ${era.name}.`);
   }
 
@@ -154,6 +171,8 @@ export default class GamePlay extends Phaser.Scene {
   }
 
   private syncHud(message?: string): void {
+    this.syncInventoryFromRegistry();
+    this.syncEraFromRegistry();
     const era = ERAS[this.eraIndex];
     const sheep = this.getNearestSheep();
     const milkStatus = sheep?.milk.ready
@@ -168,6 +187,7 @@ export default class GamePlay extends Phaser.Scene {
         : "none";
 
     this.registry.set("playerInventory", this.inventory);
+    this.registry.set("eraIndex", this.eraIndex);
     this.registry.set("sheepCount", this.sheepGroup.countActive(true));
     this.registry.set("currency", era.currency);
     this.registry.set("currencyLabel", `${era.currencyLabel} (${era.currencySymbol})`);
@@ -175,6 +195,60 @@ export default class GamePlay extends Phaser.Scene {
     if (message) {
       this.registry.set("hudMessage", message);
     }
+
+  }
+
+  private syncEraFromRegistry(): void {
+    const savedEraIndex = this.registry.get("eraIndex");
+    if (
+      typeof savedEraIndex === "number" &&
+      Number.isInteger(savedEraIndex) &&
+      savedEraIndex >= 0 &&
+      savedEraIndex < ERAS.length
+    ) {
+      this.eraIndex = savedEraIndex;
+      this.farmBackground.setTexture(ERAS[this.eraIndex].backgroundKey);
+    }
+  }
+
+  private syncInventoryFromRegistry(): void {
+    const savedInventory = this.registry.get("playerInventory");
+    if (!savedInventory || typeof savedInventory !== "object") {
+      return;
+    }
+
+    const legacyInventory = savedInventory as {
+      latte?: unknown;
+      lana?: unknown;
+      formaggio?: unknown;
+      coperte?: unknown;
+      lvlCesoie?: unknown;
+      lvlSecchi?: unknown;
+    };
+
+    if (typeof legacyInventory.latte === "number") {
+      this.inventory.milk = legacyInventory.latte;
+    }
+    if (typeof legacyInventory.lana === "number") {
+      this.inventory.wool = legacyInventory.lana;
+    }
+    if (typeof legacyInventory.formaggio === "number") {
+      this.inventory.formaggio = legacyInventory.formaggio;
+    }
+    if (typeof legacyInventory.coperte === "number") {
+      this.inventory.coperte = legacyInventory.coperte;
+    }
+    if (typeof legacyInventory.lvlCesoie === "number") {
+      this.inventory.shearsLevel = legacyInventory.lvlCesoie;
+    }
+    if (typeof legacyInventory.lvlSecchi === "number") {
+      this.inventory.milkBucketLevel = legacyInventory.lvlSecchi;
+    }
+
+    this.inventory.latte = this.inventory.milk;
+    this.inventory.lana = this.inventory.wool;
+    this.inventory.lvlCesoie = this.inventory.shearsLevel;
+    this.inventory.lvlSecchi = this.inventory.milkBucketLevel;
   }
 
   private shearSheep(time: number): void {

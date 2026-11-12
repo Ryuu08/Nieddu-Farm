@@ -8,6 +8,12 @@ export function createDefaultInventory(): PlayerInventory {
     sheep: 1,
     milkBucketLevel: 0,
     shearsLevel: 0,
+    latte: 0,
+    lana: 0,
+    formaggio: 0,
+    coperte: 0,
+    lvlCesoie: 0,
+    lvlSecchi: 0,
   };
 }
 
@@ -20,6 +26,11 @@ export class InventorySystem {
     }
 
     this.inventory[product] += quantity;
+    if (product === "milk") {
+      this.inventory.latte = this.inventory.milk;
+    } else {
+      this.inventory.lana = this.inventory.wool;
+    }
   }
 
   public remove(product: SellableProduct, quantity: number): boolean {
@@ -28,6 +39,11 @@ export class InventorySystem {
     }
 
     this.inventory[product] -= quantity;
+    if (product === "milk") {
+      this.inventory.latte = this.inventory.milk;
+    } else {
+      this.inventory.lana = this.inventory.wool;
+    }
     return true;
   }
 }

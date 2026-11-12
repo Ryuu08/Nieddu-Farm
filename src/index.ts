@@ -6,6 +6,8 @@ import Hud from "./scenes/Hud";
 import Preloader from "./scenes/Preloader";
 import GamePlay from "./scenes/GamePlay";
 import GameOver from "./scenes/GameOver";
+import Victory from "./scenes/Victory";
+import Pause from "./scenes/Pause";
 import Intro from "./scenes/Intro";
 import Store from "./scenes/Store";
 import Laboratory from "./scenes/Laboratory";
@@ -37,6 +39,8 @@ window.addEventListener("load", () => {
       Intro,
       GamePlay,
       GameOver,
+      Victory,
+      Pause,
       Store,
       Laboratory
     ],

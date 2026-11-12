@@ -4,16 +4,16 @@ import { ProductionState } from "../types/Production";
 export default class Sheep extends Phaser.Physics.Arcade.Sprite {
   public readonly milk: ProductionState = {
     resource: "milk",
-    durationMs: 30_000,
-    elapsedMs: 0,
-    ready: false,
+    durationMs: 3_000,
+    elapsedMs: 3_000,
+    ready: true,
   };
 
   public readonly wool: ProductionState = {
     resource: "wool",
-    durationMs: 45_000,
-    elapsedMs: 0,
-    ready: false,
+    durationMs: 3_000,
+    elapsedMs: 3_000,
+    ready: true,
   };
 
   constructor(

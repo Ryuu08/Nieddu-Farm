@@ -31,6 +31,8 @@ export default class Laboratory extends Phaser.Scene {
                 pecoreNere: 0,
             };
         }
+
+        this.normalizeInventoryAliases();
     }
 
     preload(): void {
@@ -262,9 +264,9 @@ export default class Laboratory extends Phaser.Scene {
             return;
         }
         this.playerInventory.latte -= 2;
+        this.playerInventory.milk = this.playerInventory.latte;
         this.playerInventory.formaggio += 1;
-        this.registry.set("playerInventory", { ...this.playerInventory });
-        this.refreshInventoryText();
+        this.persistInventory();
         this.showMessage("FORMAGGIO PRODOTTO!", 0x00aa00);
     }
 
@@ -275,10 +277,32 @@ export default class Laboratory extends Phaser.Scene {
             return;
         }
         this.playerInventory.lana -= 1;
+        this.playerInventory.wool = this.playerInventory.lana;
         this.playerInventory.coperte += 1;
-        this.registry.set("playerInventory", { ...this.playerInventory });
-        this.refreshInventoryText();
+        this.persistInventory();
         this.showMessage("COPERTA PRODOTTA!", 0x00aa00);
+    }
+
+    private normalizeInventoryAliases(): void {
+        if (!Number.isFinite(this.playerInventory.latte)) {
+            this.playerInventory.latte = Number.isFinite(this.playerInventory.milk)
+                ? this.playerInventory.milk
+                : 0;
+        }
+        if (!Number.isFinite(this.playerInventory.lana)) {
+            this.playerInventory.lana = Number.isFinite(this.playerInventory.wool)
+                ? this.playerInventory.wool
+                : 0;
+        }
+        if (!Number.isFinite(this.playerInventory.formaggio)) {
+            this.playerInventory.formaggio = 0;
+        }
+        if (!Number.isFinite(this.playerInventory.coperte)) {
+            this.playerInventory.coperte = 0;
+        }
+
+        this.playerInventory.milk = this.playerInventory.latte;
+        this.playerInventory.wool = this.playerInventory.lana;
     }
 
     private persistInventory(): void {

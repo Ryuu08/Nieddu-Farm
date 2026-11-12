@@ -20,7 +20,7 @@ export default class Hud extends Phaser.Scene {
       fontSize: "20px",
     }).setScrollFactor(0).setDepth(10);
 
-    this.statusText = this.add.text(24, 76, "", {
+    this.statusText = this.add.text(24, 160, "", {
       color: "#ffffff",
       backgroundColor: "#76513a",
       padding: { left: 12, right: 12, top: 8, bottom: 8 },
@@ -35,7 +35,20 @@ export default class Hud extends Phaser.Scene {
   }
 
   private updateDisplay(): void {
-    const inventory = this.registry.get("playerInventory");
+    const inventory = this.registry.get("playerInventory") ?? {
+      coins: 0,
+      milk: 0,
+      wool: 0,
+      sheep: 0,
+      milkBucketLevel: 0,
+      shearsLevel: 0,
+      latte: 0,
+      lana: 0,
+      formaggio: 0,
+      coperte: 0,
+      lvlCesoie: 0,
+      lvlSecchi: 0,
+    };
     const currencyLabel = this.registry.get("currencyLabel") ?? "Coins";
     const productionStatus = this.registry.get("productionStatus") ?? "";
     const hudMessage = this.registry.get("hudMessage") ?? "";

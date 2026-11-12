@@ -85,12 +85,6 @@ structure. Existing scenes and `src/GameData.ts` remain in place while the new
 entities and systems are introduced. This approach keeps the current Phaser
 entry point working and avoids moving all gameplay logic at once.
 
-## Development plan
-
-The short-term goal is a 14-day MVP development cycle. The detailed daily
-checklist is available in
-[Piano-14-Giorni-MVP.md](./Piano-14-Giorni-MVP.md).
-
 Features planned for a later stage include:
 
 - additional historical eras;

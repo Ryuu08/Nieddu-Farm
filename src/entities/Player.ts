@@ -9,6 +9,7 @@ export interface PlayerMovementKeys {
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   private readonly speed = 200;
+  private lastDirection: "up" | "down" | "left" | "right" = "down";
 
   constructor(
     scene: Phaser.Scene,
@@ -35,20 +36,31 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     const upPressed = cursors.up.isDown || movementKeys?.up.isDown === true;
     const downPressed = cursors.down.isDown || movementKeys?.down.isDown === true;
 
-    if (leftPressed) {
-      body.setVelocityX(-this.speed);
-    } else if (rightPressed) {
-      body.setVelocityX(this.speed);
-    }
+    let velocityX = 0;
+    let velocityY = 0;
+    if (leftPressed) velocityX -= 1;
+    if (rightPressed) velocityX += 1;
+    if (upPressed) velocityY -= 1;
+    if (downPressed) velocityY += 1;
 
-    if (upPressed) {
-      body.setVelocityY(-this.speed);
-    } else if (downPressed) {
-      body.setVelocityY(this.speed);
+    if (velocityX !== 0 || velocityY !== 0) {
+      const length = Math.hypot(velocityX, velocityY);
+      body.setVelocity(
+        (velocityX / length) * this.speed,
+        (velocityY / length) * this.speed,
+      );
+
+      if (Math.abs(body.velocity.x) >= Math.abs(body.velocity.y)) {
+        this.lastDirection = body.velocity.x > 0 ? "right" : "left";
+      } else {
+        this.lastDirection = body.velocity.y > 0 ? "down" : "up";
+      }
     }
 
     if (body.velocity.length() > 0) {
-      body.velocity.normalize().scale(this.speed);
+      this.anims.play(`player-walk-${this.lastDirection}`, true);
+    } else {
+      this.anims.play(`player-idle-${this.lastDirection}`, true);
     }
   }
 }

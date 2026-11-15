@@ -127,7 +127,7 @@ export default class Intro extends Phaser.Scene {
 
   update(time: number, delta: number): void {}
   private createBackground(): void {
-    this._bg = this.add.image(0, 0, "bg_mainmenu");
+    this._bg = this.add.image(0, 0, "old-main-menu");
     this._bg.setOrigin(0, 0);
     this._bg.setDisplaySize(this.game.canvas.width, this.game.canvas.height);
 
@@ -143,7 +143,7 @@ export default class Intro extends Phaser.Scene {
   }
 
   private createLogo(): void {
-    this._image1 = this.add.image(1192, 82, "intro-logo-test");
+    this._image1 = this.add.image(1192, 82, "old-logo");
     this._image1.setOrigin(0.5);
     this._image1.setScale(0.15);
   }

@@ -11,6 +11,8 @@ import Pause from "./scenes/Pause";
 import Intro from "./scenes/Intro";
 import Store from "./scenes/Store";
 import Laboratory from "./scenes/Laboratory";
+import Setting from "./scenes/Setting";
+import Credits from "./scenes/Credits";
 // Import GameData containing the global game values.
 import { GameData } from "./GameData";
 
@@ -42,7 +44,9 @@ window.addEventListener("load", () => {
       Victory,
       Pause,
       Store,
-      Laboratory
+      Laboratory,
+      Setting,
+      Credits,
     ],
     physics: {
       default: "arcade",

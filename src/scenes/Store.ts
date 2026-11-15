@@ -108,7 +108,7 @@ export default class Store extends Phaser.Scene {
                 priceCoperte: 8,
                 description: `Sblocca: ${ERAS[this.currentEraIndex + 1].name}`,
                 icon: 'ERA',
-                image: 'nuraghe-test',
+                image: 'old-nuraghe',
             });
         } else {
             this.products.push({

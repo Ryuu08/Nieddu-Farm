@@ -66,11 +66,11 @@ export default class GamePlay extends Phaser.Scene {
   ] as const;
   private eraTransitionLayer?: Phaser.GameObjects.Container;
   private readonly eraHistory = [
-    "I nuraghi furono costruiti durante l'eta del Bronzo e dell'eta del Ferro. Ancora oggi sono uno dei simboli piu riconoscibili della Sardegna.",
-    "Roma conquisto la Sardegna nel 238 a.C. L'isola divenne una provincia importante per il grano e per le rotte del Mediterraneo.",
-    "Nel Medioevo la Sardegna era divisa in quattro giudicati: Cagliari, Arborea, Torres e Gallura, ciascuno con le proprie istituzioni.",
-    "La pastorizia e la lavorazione del latte hanno attraversato i secoli e sono ancora parte importante della cultura e dell'economia sarda.",
-    "Questa era immagina una Sardegna del futuro: tradizione, tecnologia e rispetto del territorio possono crescere insieme.",
+    "«La nostra terra è costellata di torri di pietra, i nuraghi. Le abbiamo innalzate senza cemento, usando soltanto enormi blocchi di pietra. Eppure, ancora oggi, resistono al tempo. Alcuni ci chiamano giganti... forse perché non riescono a immaginare come mani umane abbiano potuto costruirle.»",
+    "«Roma conquistò la Sardegna nel 238 avanti Cristo. Da allora, l'isola divenne una terra preziosa per l'Impero: grano, minerali e porti erano le sue ricchezze. Ma tra le montagne dell'interno, non tutti si piegarono al dominio romano.»",
+    "«La nostra isola è divisa in quattro regni: Cagliari, Arborea, Torres e Gallura. Li chiamano Giudicati, e ciascuno ha il proprio sovrano. Per la prima volta dopo secoli, la Sardegna è governata da poteri nati dalla sua stessa terra.»",
+    "«Ho visto la guerra portare via i nostri giovani e costringere intere famiglie a lasciare la propria terra. Ma ho visto anche nascere nuove strade, nuove città e nuove speranze. La Sardegna cambia volto, ma le sue radici resistono.»",
+    "«Ho studiato ogni civiltà che vi ha preceduti. Tutte cercavano di costruire un futuro migliore, eppure molte hanno commesso gli stessi errori. Ho calcolato milioni di possibilità, ma non posso prevedere ogni scelta umana. Forse il futuro non si calcola: si costruisce.\n\nEl. Psy. Kongroo.»",
   ] as const;
   private readonly eraTransitions = [
     "Dalle comunita nuragiche alle nuove rotte del Mediterraneo, la Sardegna entra nell'epoca romana.",
@@ -228,14 +228,6 @@ export default class GamePlay extends Phaser.Scene {
       0,
     );
 
-    this.add.text(640, 95, "NIEDDU FARM", {
-      color: "#ffffff",
-      fontFamily: "Arial",
-      fontSize: "32px",
-      fontStyle: "bold",
-      stroke: "#31512a",
-      strokeThickness: 8,
-    }).setOrigin(0.5);
   }
 
   private changeEra(): void {
@@ -275,10 +267,11 @@ export default class GamePlay extends Phaser.Scene {
         this.registry.set("eraIndex", this.eraIndex);
         this.syncHud(`Era changed: ${era.name}.`);
         const previousEra = ERAS[(this.eraIndex - 1 + ERAS.length) % ERAS.length];
+        const previousEraIndex = (this.eraIndex - 1 + ERAS.length) % ERAS.length;
         this.showEraHistory(
           previousEra.name,
           era.name,
-          this.eraHistory[this.eraIndex],
+          this.eraHistory[previousEraIndex],
           this.eraTransitions[this.eraIndex],
         );
 
@@ -329,9 +322,9 @@ export default class GamePlay extends Phaser.Scene {
     const text = this.add.text(470, 265, history, {
       color: "#ffffff",
       fontFamily: "Arial",
-      fontSize: "22px",
-      lineSpacing: 8,
-      wordWrap: { width: 580 },
+      fontSize: "24px",
+      lineSpacing: 10,
+      wordWrap: { width: 690 },
       align: "left",
     }).setOrigin(0, 0.5);
 

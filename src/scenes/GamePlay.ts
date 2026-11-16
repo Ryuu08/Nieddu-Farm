@@ -97,10 +97,15 @@ export default class GamePlay extends Phaser.Scene {
     super({ key: "GamePlay" });
   }
 
+  // ---------------------------------------------------------------------------
+  // SCENE LIFECYCLE AND INPUT
+  // ---------------------------------------------------------------------------
   /**
    * Builds the farm, connects physics colliders, and registers gameplay input.
    */
   create(): void {
+    // Restore the last valid era before creating its background and world objects.
+    this.loadInitialEraFromRegistry();
     // Reset the temporary shearing cooldown every time the scene is created.
     this.shearCooldownUntil = 0;
     this.createLegacyAnimations();
@@ -143,8 +148,8 @@ export default class GamePlay extends Phaser.Scene {
     };
     this.interactKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.E);
     this.shearKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.F);
-    this.storeKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.P);
-    this.laboratoryKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.L);
+    this.storeKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.C);
+    this.laboratoryKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.X);
     this.eraKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.T);
     this.continueEraKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
     this.escapeKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
@@ -167,6 +172,9 @@ export default class GamePlay extends Phaser.Scene {
     });
   }
 
+  // ---------------------------------------------------------------------------
+  // PAUSE AND MAIN UPDATE
+  // ---------------------------------------------------------------------------
   private openPauseMenu(): void {
     // Avoid launching multiple pause overlays from repeated ESC input.
     if (this.scene.isActive("Pause")) {
@@ -214,13 +222,16 @@ export default class GamePlay extends Phaser.Scene {
     this.syncHud();
   }
 
+  // ---------------------------------------------------------------------------
+  // FARM, MAP AND ERA WORLD
+  // ---------------------------------------------------------------------------
   private createTemporaryFarm(): void {
     // The legacy era image is currently used as the playable farm background.
     this.cameras.main.setBackgroundColor("#9bcf82");
     this.farmBackground = this.add.image(
       GameData.globals.gameWidth / 2,
       GameData.globals.gameHeight / 2,
-      ERAS[0].backgroundKey,
+      ERAS[this.eraIndex].backgroundKey,
     )
       .setDisplaySize(GameData.globals.gameWidth, GameData.globals.gameHeight)
       .setTint(0xb4d895);
@@ -258,7 +269,7 @@ export default class GamePlay extends Phaser.Scene {
         boundaryHeight,
         0xff0000,
         0.45,
-      ).setDepth(1100);
+      ).setDepth(1100).setVisible(false);
       this.physics.add.existing(boundary, true);
       this.decorationGroup.add(boundary);
     });
@@ -450,6 +461,9 @@ export default class GamePlay extends Phaser.Scene {
     this.currentSign = sign;
   }
 
+  // ---------------------------------------------------------------------------
+  // PLAYER INTERACTIONS AND INVENTORY
+  // ---------------------------------------------------------------------------
   private collectProducts(): void {
     // Milk collection uses the sheep detected in front of the player.
     const sheep = this.getSheepForInteraction();
@@ -472,7 +486,9 @@ export default class GamePlay extends Phaser.Scene {
     // A sheep can provide milk and wool independently.
     const collected: string[] = [];
     if (this.productionSystem.collect(sheep.milk)) {
-      this.inventorySystem.add("milk", 1);
+      // Level 0 still represents the basic bucket: it must collect at least 1.
+      const amount = Math.max(1, this.inventory.milkBucketLevel);
+      this.inventorySystem.add("milk", amount);
       collected.push("milk");
     }
 
@@ -512,8 +528,7 @@ export default class GamePlay extends Phaser.Scene {
 
   }
 
-  private syncEraFromRegistry(): void {
-    // Store and Laboratory may update the era while gameplay is paused.
+  private loadInitialEraFromRegistry(): void {
     const savedEraIndex = this.registry.get("eraIndex");
     if (
       typeof savedEraIndex === "number" &&
@@ -522,8 +537,26 @@ export default class GamePlay extends Phaser.Scene {
       savedEraIndex < ERAS.length
     ) {
       this.eraIndex = savedEraIndex;
-      this.farmBackground.setTexture(ERAS[this.eraIndex].backgroundKey);
     }
+  }
+
+  private syncEraFromRegistry(): void {
+    // Store and Laboratory may update the era while gameplay is paused.
+    const savedEraIndex = this.registry.get("eraIndex");
+    if (
+      typeof savedEraIndex !== "number" ||
+      !Number.isInteger(savedEraIndex) ||
+      savedEraIndex < 0 ||
+      savedEraIndex >= ERAS.length ||
+      savedEraIndex === this.eraIndex
+    ) {
+      return;
+    }
+
+    this.eraIndex = savedEraIndex;
+    this.farmBackground.setTexture(ERAS[this.eraIndex].backgroundKey);
+    this.spawnEraWorldObjects(this.eraIndex);
+    this.playMusicForEra(this.eraIndex);
   }
 
   private syncInventoryFromRegistry(): void {
@@ -540,12 +573,20 @@ export default class GamePlay extends Phaser.Scene {
       coperte?: unknown;
       lvlCesoie?: unknown;
       lvlSecchi?: unknown;
+      milk?: unknown;
+      wool?: unknown;
+      shearsLevel?: unknown;
+      milkBucketLevel?: unknown;
     };
 
-    if (typeof legacyInventory.latte === "number") {
+    if (typeof legacyInventory.milk === "number") {
+      this.inventory.milk = legacyInventory.milk;
+    } else if (typeof legacyInventory.latte === "number") {
       this.inventory.milk = legacyInventory.latte;
     }
-    if (typeof legacyInventory.lana === "number") {
+    if (typeof legacyInventory.wool === "number") {
+      this.inventory.wool = legacyInventory.wool;
+    } else if (typeof legacyInventory.lana === "number") {
       this.inventory.wool = legacyInventory.lana;
     }
     if (typeof legacyInventory.formaggio === "number") {
@@ -554,10 +595,14 @@ export default class GamePlay extends Phaser.Scene {
     if (typeof legacyInventory.coperte === "number") {
       this.inventory.coperte = legacyInventory.coperte;
     }
-    if (typeof legacyInventory.lvlCesoie === "number") {
+    if (typeof legacyInventory.shearsLevel === "number") {
+      this.inventory.shearsLevel = legacyInventory.shearsLevel;
+    } else if (typeof legacyInventory.lvlCesoie === "number") {
       this.inventory.shearsLevel = legacyInventory.lvlCesoie;
     }
-    if (typeof legacyInventory.lvlSecchi === "number") {
+    if (typeof legacyInventory.milkBucketLevel === "number") {
+      this.inventory.milkBucketLevel = legacyInventory.milkBucketLevel;
+    } else if (typeof legacyInventory.lvlSecchi === "number") {
       this.inventory.milkBucketLevel = legacyInventory.lvlSecchi;
     }
 
@@ -601,8 +646,9 @@ export default class GamePlay extends Phaser.Scene {
       this.syncHud("The sheep has no wool ready.");
       return;
     }
-
-    this.inventorySystem.add("wool", 1);
+    // A valid pair of shears must collect at least 1 unit of wool.
+    const amount = Math.max(1, this.inventory.shearsLevel);
+    this.inventorySystem.add("wool", amount);
     this.shearCooldownUntil = time + GamePlay.SHEAR_COOLDOWN_MS;
     this.syncHud("Sheep sheared. Wool collected.");
   }
@@ -617,6 +663,9 @@ export default class GamePlay extends Phaser.Scene {
     this.sheepGroup.add(sheep);
   }
 
+  // ---------------------------------------------------------------------------
+  // SHEEP SPAWNING, ANIMATION, MOVEMENT AND INTERACTION
+  // ---------------------------------------------------------------------------
   private createLegacyAnimations(): void {
     // Recreate the frame ranges used by the original player and sheep spritesheets.
     const animations = [
@@ -823,6 +872,9 @@ export default class GamePlay extends Phaser.Scene {
       });
   }
 
+  // ---------------------------------------------------------------------------
+  // PRODUCTION AND DAY/NIGHT CYCLE
+  // ---------------------------------------------------------------------------
   private updateDayNight(delta: number): void {
     // The short day/night cycle is intentionally tuned for development playtests.
     this.timeOfDay += delta;
@@ -880,11 +932,44 @@ export default class GamePlay extends Phaser.Scene {
 
     return 2;
   }
+  private inventoryResetToDefault(): void {
+    const defaultInventory = createDefaultInventory();
+
+    Object.assign(this.inventory, defaultInventory);
+    // Prevent syncHud() from restoring the inventory that existed before Game Over.
+    this.registry.set("playerInventory", this.inventory);
+  }
+
+private eraResetToDefault(): void {
+    // Ripristina la prima era
+    this.eraIndex = 0;
+
+    // Aggiorna l'era nel registro condiviso
+    this.registry.set("eraIndex", this.eraIndex);
+
+    // Ripristina lo sfondo della fattoria
+    this.farmBackground.setTexture(ERAS[0].backgroundKey);
+
+    // Ripristina gli oggetti del mondo
+    this.spawnEraWorldObjects(this.eraIndex);
+
+    // Ripristina la musica iniziale
+    this.playMusicForEra(this.eraIndex);
+
+    // Aggiorna la HUD
+    this.syncHud();
+}
+
 
   private goToGameOver(): void {
-    // Stop the HUD before replacing gameplay with the final Game Over scene.
+    // Ferma la scena HUD
     this.scene.stop("Hud");
+
+    // Ripristina l'inventario ai valori iniziali
+    this.inventoryResetToDefault();
+    this.eraResetToDefault();
+
+    // Avvia la schermata Game Over
     this.scene.start("GameOver");
-    this.scene.stop("GamePlay");
-  }
+}
 }

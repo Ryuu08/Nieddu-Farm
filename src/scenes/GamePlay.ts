@@ -117,9 +117,9 @@ export default class GamePlay extends Phaser.Scene {
     this.player.setScale(1.5);
     this.player.setBodySize(20, 35).setOffset(5, 10);
 
-    // Sheep collide with the player and with one another.
+    // Sheep collide with one another, but not with the player.
     this.sheepGroup = this.physics.add.group();
-    this.physics.add.collider(this.player, this.sheepGroup);
+    // Player and sheep intentionally do not collide; interaction uses a directional ray check.
     this.physics.add.collider(this.sheepGroup, this.sheepGroup);
     this.decorationGroup = this.physics.add.staticGroup();
     this.signGroup = this.physics.add.staticGroup();
@@ -451,8 +451,8 @@ export default class GamePlay extends Phaser.Scene {
   }
 
   private collectProducts(): void {
-    // Milk collection uses the closest sheep to preserve the current gameplay flow.
-    const sheep = this.getNearestSheep();
+    // Milk collection uses the sheep detected in front of the player.
+    const sheep = this.getSheepForInteraction();
     if (!sheep) {
       return;
     }
@@ -488,7 +488,7 @@ export default class GamePlay extends Phaser.Scene {
     this.syncInventoryFromRegistry();
     this.syncEraFromRegistry();
     const era = ERAS[this.eraIndex];
-    const sheep = this.getNearestSheep();
+    const sheep = this.getSheepForInteraction();
     const milkStatus = sheep?.milk.ready
       ? "ready"
       : sheep
@@ -759,6 +759,60 @@ export default class GamePlay extends Phaser.Scene {
     }, undefined);
   }
 
+  private getSheepForInteraction(): Sheep | undefined {
+    // Use the player's movement direction as a short interaction ray.
+    const sheep = this.sheepGroup.getChildren()
+      .filter((child): child is Sheep => child instanceof Sheep);
+    const playerBody = this.player.body as Phaser.Physics.Arcade.Body;
+    const rayLength = 110;
+    const rayWidth = 32;
+
+    if (sheep.length === 0) {
+      return undefined;
+    }
+
+    if (playerBody.velocity.length() > 0) {
+      const direction = playerBody.velocity.clone().normalize();
+      const rayHits = sheep
+        .map((candidate) => {
+          const offsetX = candidate.x - this.player.x;
+          const offsetY = candidate.y - this.player.y;
+          const projection = offsetX * direction.x + offsetY * direction.y;
+          const distanceFromRay = Math.abs(
+            offsetX * direction.y - offsetY * direction.x,
+          );
+
+          return { candidate, projection, distanceFromRay };
+        })
+        .filter(
+          ({ projection, distanceFromRay }) =>
+            projection >= 0 &&
+            projection <= rayLength &&
+            distanceFromRay <= rayWidth,
+        )
+        .sort((first, second) => first.projection - second.projection);
+
+      if (rayHits.length > 0) {
+        return rayHits[0].candidate;
+      }
+    }
+
+    // When the player is still, keep the interaction reliable in every direction.
+    const nearest = this.getNearestSheep();
+    if (!nearest) {
+      return undefined;
+    }
+
+    return Phaser.Math.Distance.Between(
+      this.player.x,
+      this.player.y,
+      nearest.x,
+      nearest.y,
+    ) <= rayLength
+      ? nearest
+      : undefined;
+  }
+
   private updateSheepProduction(delta: number): void {
     // Each sheep advances milk and wool timers independently.
     this.sheepGroup.getChildren()
@@ -831,5 +885,6 @@ export default class GamePlay extends Phaser.Scene {
     // Stop the HUD before replacing gameplay with the final Game Over scene.
     this.scene.stop("Hud");
     this.scene.start("GameOver");
+    this.scene.stop("GamePlay");
   }
 }

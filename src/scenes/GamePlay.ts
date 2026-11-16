@@ -170,6 +170,10 @@ export default class GamePlay extends Phaser.Scene {
         this.scene.stop("Hud");
       }
     });
+    //Create a night overlay to darken the screen during nighttime.
+  this.nightOverlay = this.add.rectangle(640, 400, 1280, 800, 0x191970);
+  this.nightOverlay.setAlpha(0);
+  this.nightOverlay.setDepth(1000);
   }
 
   // ---------------------------------------------------------------------------
@@ -875,7 +879,7 @@ export default class GamePlay extends Phaser.Scene {
   // ---------------------------------------------------------------------------
   // PRODUCTION AND DAY/NIGHT CYCLE
   // ---------------------------------------------------------------------------
-  private updateDayNight(delta: number): void {
+ private updateDayNight(delta: number): void {
     // The short day/night cycle is intentionally tuned for development playtests.
     this.timeOfDay += delta;
     const duration = this.isNight
@@ -899,9 +903,8 @@ export default class GamePlay extends Phaser.Scene {
     this.nightOverlay.setAlpha(0);
     this.dayNumber += 1;
     this.syncHud(`Day ${this.dayNumber} has started.`);
-  }
-
-  private removeRandomSheepAtNight(): void {
+}
+private removeRandomSheepAtNight(): void {
     // Cull only active sheep and never remove more than currently exist.
     const sheep = this.sheepGroup.getChildren()
       .filter((child): child is Sheep => child instanceof Sheep);
@@ -917,28 +920,22 @@ export default class GamePlay extends Phaser.Scene {
     if (this.sheepGroup.countActive(true) === 0) {
       this.goToGameOver();
     }
-  }
+}
 
-  private rollNightCullCount(): 0 | 1 | 2 {
+private rollNightCullCount(): 0 | 1 | 2 {
     // Weighted roll: most nights remove none or one sheep.
     const roll = Phaser.Math.Between(1, 100);
+
     if (roll <= this.nightCullWeights.zero) {
-      return 0;
+        return 0;
     }
 
     if (roll <= this.nightCullWeights.zero + this.nightCullWeights.one) {
-      return 1;
+        return 1;
     }
 
     return 2;
-  }
-  private inventoryResetToDefault(): void {
-    const defaultInventory = createDefaultInventory();
-
-    Object.assign(this.inventory, defaultInventory);
-    // Prevent syncHud() from restoring the inventory that existed before Game Over.
-    this.registry.set("playerInventory", this.inventory);
-  }
+}
 
 private eraResetToDefault(): void {
     // Ripristina la prima era
@@ -958,6 +955,14 @@ private eraResetToDefault(): void {
 
     // Aggiorna la HUD
     this.syncHud();
+}
+
+private inventoryResetToDefault(): void {
+    const defaultInventory = createDefaultInventory();
+
+    Object.assign(this.inventory, defaultInventory);
+    // Prevent syncHud() from restoring the inventory that existed before Game Over.
+    this.registry.set("playerInventory", this.inventory);
 }
 
 

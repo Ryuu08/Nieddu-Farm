@@ -106,6 +106,12 @@ export default class GamePlay extends Phaser.Scene {
     this.createLegacyAnimations();
     this.createTemporaryFarm();
     this.playMusicForEra(this.eraIndex);
+    this.physics.world.setBounds(
+      0,
+      0,
+      GameData.globals.gameWidth,
+      GameData.globals.gameHeight,
+    );
 
     this.player = new Player(this, 320, 420, "player-legacy", 16);
     this.player.setScale(1.5);
@@ -121,12 +127,11 @@ export default class GamePlay extends Phaser.Scene {
     this.physics.add.collider(this.sheepGroup, this.decorationGroup);
     this.physics.add.collider(this.player, this.signGroup);
     this.physics.add.collider(this.sheepGroup, this.signGroup);
+    this.createMapBoundaries();
     // Create the visual and collision objects for the starting era.
     this.spawnEraWorldObjects(this.eraIndex);
-    this.spawnSheep(560, 360);
-    this.spawnSheep(640, 380);
-    this.spawnSheep(720, 420);
-    this.spawnSheep(680, 320);
+    this.spawnSheep(500, 360);
+    this.spawnSheep(500, 390);
 
     // Keyboard controls preserve the legacy WASD and arrow-key layout.
     this.cursors = this.input.keyboard!.createCursorKeys();
@@ -145,12 +150,14 @@ export default class GamePlay extends Phaser.Scene {
     this.escapeKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
     this.escapeKey.on("down", () => this.openPauseMenu());
     this.inventorySystem = new InventorySystem(this.inventory);
+    this.events.on("eraPurchaseCompleted", this.changeEra, this);
 
     this.syncHud("Move with WASD or arrows. Press E/F near a sheep. Press T to change era.");
     // HUD runs as an overlay scene and is stopped with gameplay.
     this.scene.launch("Hud");
     this.scene.bringToTop("Hud");
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      this.events.off("eraPurchaseCompleted", this.changeEra, this);
       this.isEraTransitioning = false;
       this.eraTransitionLayer?.destroy();
       this.eraMusic?.stop();
@@ -224,10 +231,37 @@ export default class GamePlay extends Phaser.Scene {
       GameData.globals.gameHeight / 2,
       GameData.globals.gameWidth,
       GameData.globals.gameHeight,
-      0x000000,
+      0x172554,
       0,
-    );
+    ).setDepth(1000);
 
+  }
+
+  private createMapBoundaries(): void {
+    // Keep every actor ten pixels inside the visible map edge.
+    const thickness = 5;
+    const inset = 40;
+    const width = GameData.globals.gameWidth;
+    const height = GameData.globals.gameHeight;
+    const boundaries = [
+      { x: inset + thickness / 2, y: height / 2, width: thickness, height },
+      { x: width - inset - thickness / 2, y: height / 2, width: thickness, height },
+      { x: width / 2, y: inset + thickness / 2, width, height: thickness },
+      { x: width / 2, y: height - inset - thickness / 2, width, height: thickness },
+    ];
+
+    boundaries.forEach(({ x, y, width: boundaryWidth, height: boundaryHeight }) => {
+      const boundary = this.add.rectangle(
+        x,
+        y,
+        boundaryWidth,
+        boundaryHeight,
+        0xff0000,
+        0.45,
+      ).setDepth(1100);
+      this.physics.add.existing(boundary, true);
+      this.decorationGroup.add(boundary);
+    });
   }
 
   private changeEra(): void {
@@ -578,6 +612,8 @@ export default class GamePlay extends Phaser.Scene {
     const sheep = new Sheep(this, x, y, "sheep-legacy", 12);
     sheep.setScale(0.8);
     sheep.setBodySize(42, 28).setOffset(11, 22);
+    sheep.setData("spawnX", x);
+    sheep.setData("spawnY", y);
     this.sheepGroup.add(sheep);
   }
 
@@ -658,6 +694,16 @@ export default class GamePlay extends Phaser.Scene {
       .filter((child): child is Sheep => child instanceof Sheep)
       .forEach((sheep) => {
         const body = sheep.body as Phaser.Physics.Arcade.Body;
+        if (
+          body.left < 5 ||
+          body.right > GameData.globals.gameWidth - 5 ||
+          body.top < 5 ||
+          body.bottom > GameData.globals.gameHeight - 5
+        ) {
+          this.resetSheepToSpawn(sheep);
+          return;
+        }
+
         const velocity = body.velocity;
         // Collisions can add impulse after setMaxVelocity, so clamp again every frame.
         if (velocity.length() > Sheep.MAX_SPEED) {
@@ -677,6 +723,14 @@ export default class GamePlay extends Phaser.Scene {
           sheep.setFrame(12);
         }
       });
+  }
+
+  private resetSheepToSpawn(sheep: Sheep): void {
+    // Recover sheep that somehow pass through a boundary or receive an excessive impulse.
+    const spawnX = sheep.getData("spawnX") as number;
+    const spawnY = sheep.getData("spawnY") as number;
+    sheep.setPosition(spawnX, spawnY);
+    sheep.setVelocity(0, 0);
   }
 
   private getNearestSheep(): Sheep | undefined {
@@ -731,7 +785,7 @@ export default class GamePlay extends Phaser.Scene {
 
     if (this.isNight) {
       // Night removes a random number of sheep and can trigger Game Over.
-      this.nightOverlay.setAlpha(0.3);
+      this.nightOverlay.setAlpha(0.5);
       this.removeRandomSheepAtNight();
       return;
     }

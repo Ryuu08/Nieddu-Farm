@@ -72,8 +72,8 @@ export default class Store extends Phaser.Scene {
         {
             id: 'pecoraNera',
             name: 'PECORA NERA',
-            priceFormaggio: 10,
-            priceCoperte: 8,
+            priceFormaggio: 0,
+            priceCoperte: 0,
             description: 'Pecora speciale e rara',
             icon: 'PN',
             minPecore: 5,
@@ -104,8 +104,8 @@ export default class Store extends Phaser.Scene {
             this.products.push({
                 id: 'nextEra',
                 name: 'PROSSIMA ERA',
-                priceFormaggio: 10,
-                priceCoperte: 8,
+                priceFormaggio: 0,
+                priceCoperte: 0,
                 description: `Sblocca: ${ERAS[this.currentEraIndex + 1].name}`,
                 icon: 'ERA',
                 image: 'old-nuraghe',
@@ -114,8 +114,8 @@ export default class Store extends Phaser.Scene {
             this.products.push({
                 id: 'pecoraNera',
                 name: 'PECORA NERA',
-                priceFormaggio: 10,
-                priceCoperte: 8,
+                priceFormaggio: 0,
+                priceCoperte: 0,
                 description: 'Pecora speciale e rara',
                 icon: 'PN',
                 minPecore: 5,
@@ -456,8 +456,6 @@ export default class Store extends Phaser.Scene {
                 this.registry.set('victory', true);
                 break;
             case 'nextEra':
-                this.currentEraIndex += 1;
-                this.registry.set('eraIndex', this.currentEraIndex);
                 break;
         }
 
@@ -474,6 +472,14 @@ export default class Store extends Phaser.Scene {
             this.scene.stop('GamePlay');
             this.scene.stop('Hud');
             this.scene.start('Victory');
+            return;
+        }
+
+        if (product.id === 'nextEra') {
+            // Return to gameplay before starting the same historical transition used by T.
+            this.closeStore();
+            this.scene.get('GamePlay').events.emit('eraPurchaseCompleted');
+            return;
         }
 
         // Purchase sound, when available.

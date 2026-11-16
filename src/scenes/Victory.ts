@@ -5,6 +5,7 @@ export default class Victory extends Phaser.Scene {
 
   create(): void {
     this.cameras.main.setBackgroundColor("#263b2b");
+    this.add.image(250, 380, "era-narrator-futuro").setDisplaySize(220, 220);
     this.add.text(640, 280, "YOU WIN!", {
       color: "#ffe66d",
       fontFamily: "Arial",
@@ -16,7 +17,14 @@ export default class Victory extends Phaser.Scene {
       fontFamily: "Arial",
       fontSize: "24px",
     }).setOrigin(0.5);
-    this.add.text(640, 470, "Press ENTER to return to the title screen", {
+    this.add.text(640, 445, "Nel futuro, la tradizione sarda continua grazie alle tue scelte.", {
+      color: "#f4d58d",
+      fontFamily: "Arial",
+      fontSize: "20px",
+      wordWrap: { width: 650 },
+      align: "center",
+    }).setOrigin(0.5);
+    this.add.text(640, 530, "Press ENTER to return to the title screen", {
       color: "#d8e6f3",
       fontFamily: "Arial",
       fontSize: "22px",

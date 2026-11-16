@@ -11,7 +11,7 @@ export const ERAS: EraData[] = [
   {
     id: "nuragic-sardinia",
     name: "Sardegna nuragica",
-    backgroundKey: "bg-2",
+    backgroundKey: "era-nuragica",
     currency: "barter",
     currencyLabel: "Barter",
     currencySymbol: "TRADE",
@@ -19,7 +19,7 @@ export const ERAS: EraData[] = [
   {
     id: "roman-sardinia",
     name: "Sardegna romana",
-    backgroundKey: "bg-3",
+    backgroundKey: "era-romana",
     currency: "barter",
     currencyLabel: "Barter",
     currencySymbol: "TRADE",
@@ -27,7 +27,7 @@ export const ERAS: EraData[] = [
   {
     id: "judicates-sardinia",
     name: "Sardegna dei giudicati",
-    backgroundKey: "bg-4",
+    backgroundKey: "era-giudicati",
     currency: "barter",
     currencyLabel: "Barter",
     currencySymbol: "TRADE",
@@ -35,7 +35,7 @@ export const ERAS: EraData[] = [
   {
     id: "modern-sardinia",
     name: "Sardegna moderna",
-    backgroundKey: "bg-1",
+    backgroundKey: "era-moderna",
     currency: "eur",
     currencyLabel: "Euro",
     currencySymbol: "€",
@@ -43,7 +43,7 @@ export const ERAS: EraData[] = [
   {
     id: "future-sardinia",
     name: "Sardegna del futuro",
-    backgroundKey: "bg-5",
+    backgroundKey: "era-futuro",
     currency: "btc",
     currencyLabel: "Bitcoin",
     currencySymbol: "₿",

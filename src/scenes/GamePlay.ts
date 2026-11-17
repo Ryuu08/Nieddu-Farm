@@ -312,7 +312,7 @@ export default class GamePlay extends Phaser.Scene {
         const era = ERAS[this.eraIndex];
         this.farmBackground.setTexture(era.backgroundKey);
         this.playMusicForEra(this.eraIndex);
-        this.spawnEraWorldObjects(this.eraIndex);
+        this.spawnEraWorldObjects(this.eraIndex);3
         this.registry.set("eraIndex", this.eraIndex);
         this.syncHud(`Era changed: ${era.name}.`);
         const previousEra = ERAS[(this.eraIndex - 1 + ERAS.length) % ERAS.length];
@@ -358,7 +358,7 @@ export default class GamePlay extends Phaser.Scene {
     }
 
     const narratorEraIndex = (this.eraIndex - 1 + ERAS.length) % ERAS.length;
-    const narrator = this.add.image(270, 350, this.eraNarratorKeys[narratorEraIndex])
+    const narrator = this.add.image(270, 50, this.eraNarratorKeys[narratorEraIndex])
       .setDisplaySize(190, 190);
 
     const title = this.add.text(640, 150, `${previousEraName}  ->  ${eraName}`, {

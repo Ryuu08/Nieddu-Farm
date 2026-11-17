@@ -1,16 +1,14 @@
+
 export interface PlayerInventory {
-  coins: number;
-  milk: number;
-  wool: number;
-  sheep: number;
-  milkBucketLevel: number;
-  shearsLevel: number;
-  latte: number;
-  lana: number;
-  formaggio: number;
-  coperte: number;
-  lvlCesoie: number;
-  lvlSecchi: number;
+    coins: number;
+    milk: number;
+    wool: number;
+    cheese: number;
+    blankets: number;
+    sheep: number;
+    blackSheep: number;
+    milkBucketLevel: number;
+    shearsLevel: number;
 }
 
 export type SellableProduct = "milk" | "wool";

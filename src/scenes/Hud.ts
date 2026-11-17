@@ -1,15 +1,16 @@
+
 import { formatInventory } from "../ui/InventoryPanel";
 
 export default class Hud extends Phaser.Scene {
   private inventoryText!: Phaser.GameObjects.Text;
   private statusText!: Phaser.GameObjects.Text;
+  private controlsText!: Phaser.GameObjects.Text;
 
   constructor() {
     super({
       key: "Hud",
     });
   }
-
 
   create(): void {
     this.inventoryText = this.add.text(24, 20, "", {
@@ -27,6 +28,18 @@ export default class Hud extends Phaser.Scene {
       fontFamily: "Arial",
       fontSize: "18px",
     }).setScrollFactor(0).setDepth(10);
+
+    // Display controls at the beginning of the game.
+    this.controlsText = this.add.text(24, 700,
+      "CONTROLS\nWASD / ARROWS - Move\nE/F - Collect milk / wool, C/X - Store/Laboratory", {
+      color: "#ffffff",
+      backgroundColor: "#191970",
+      padding: { left: 12, right: 12, top: 8, bottom: 8 },
+      fontFamily: "Arial",
+      fontSize: "16px",
+      lineSpacing: 4,
+    }).setScrollFactor(0).setDepth(10);
+
     this.updateDisplay();
   }
 
@@ -56,6 +69,7 @@ export default class Hud extends Phaser.Scene {
     if (inventory) {
       this.inventoryText.setText(formatInventory(inventory, currencyLabel));
     }
+
     this.statusText.setText(`${productionStatus} | ${hudMessage}`);
   }
 }

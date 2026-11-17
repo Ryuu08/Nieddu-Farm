@@ -42,9 +42,9 @@ export default class GamePlay extends Phaser.Scene {
   private readonly eraSignKeys = [
     "era-sign-0",
     "era-sign-1",
+    "era-sign-1",
     "era-sign-2",
     "era-sign-3",
-    "era-sign-4",
   ] as const;
 
   // Static groups hold the era objects that can block the player or sheep.
@@ -157,7 +157,7 @@ export default class GamePlay extends Phaser.Scene {
     this.inventorySystem = new InventorySystem(this.inventory);
     this.events.on("eraPurchaseCompleted", this.changeEra, this);
 
-    this.syncHud("Move with WASD or arrows. Press E/F near a sheep. Press T to change era.");
+    //this.syncHud("Move with WASD or arrows. Press E/F near a sheep. Press T to change era.");
     // HUD runs as an overlay scene and is stopped with gameplay.
     this.scene.launch("Hud");
     this.scene.bringToTop("Hud");
@@ -484,6 +484,11 @@ export default class GamePlay extends Phaser.Scene {
 
     if (distance > 100) {
       this.syncHud("Move closer to the sheep.");
+      return;
+    }
+
+    if (this.inventory.milkBucketLevel <= 0) {
+      this.syncHud("You need a bucket.");
       return;
     }
 

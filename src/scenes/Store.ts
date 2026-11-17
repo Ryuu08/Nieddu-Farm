@@ -104,8 +104,8 @@ export default class Store extends Phaser.Scene {
             this.products.push({
                 id: 'nextEra',
                 name: 'PROSSIMA ERA',
-                priceFormaggio: 0,
-                priceCoperte: 0,
+                priceFormaggio: 4,
+                priceCoperte: 6,
                 description: `Sblocca: ${ERAS[this.currentEraIndex + 1].name}`,
                 icon: 'ERA',
                 image: 'old-nuraghe',
@@ -114,8 +114,8 @@ export default class Store extends Phaser.Scene {
             this.products.push({
                 id: 'pecoraNera',
                 name: 'PECORA NERA',
-                priceFormaggio: 0,
-                priceCoperte: 0,
+                priceFormaggio: 4,
+                priceCoperte: 6,
                 description: 'Pecora speciale e rara',
                 icon: 'PN',
                 minPecore: 5,

@@ -1,9 +1,10 @@
 import Player, { PlayerMovementKeys } from "../entities/Player";
 import Sheep from "../entities/Sheep";
 import { ERAS } from "../data/EraData";
-import { createDefaultInventory, InventorySystem } from "../systems/InventorySystem";
 import { ProductionSystem } from "../systems/ProductionSystem";
 import { GameData } from "../GameData";
+import { PlayerInventory } from "../types/Inventory";
+import { InventorySystem, createDefaultInventory } from "../systems/InventorySystem";
 
 export default class GamePlay extends Phaser.Scene {
   // Core actors and input objects used by the gameplay scene.
@@ -89,7 +90,7 @@ export default class GamePlay extends Phaser.Scene {
   private static readonly SHEAR_COOLDOWN_MS = 3_000;
   private static readonly DAY_DURATION_MS = 30_000;
   private static readonly NIGHT_DURATION_MS = 10_000;
-  private readonly inventory = createDefaultInventory();
+  private readonly inventory: PlayerInventory = createDefaultInventory();
   private readonly productionSystem = new ProductionSystem();
   private inventorySystem!: InventorySystem;
 
@@ -155,6 +156,7 @@ export default class GamePlay extends Phaser.Scene {
     this.escapeKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
     this.escapeKey.on("down", () => this.openPauseMenu());
     this.inventorySystem = new InventorySystem(this.inventory);
+    this.registry.set("playerInventory", this.inventory);
     this.events.on("eraPurchaseCompleted", this.changeEra, this);
 
     //this.syncHud("Move with WASD or arrows. Press E/F near a sheep. Press T to change era.");
@@ -568,58 +570,16 @@ export default class GamePlay extends Phaser.Scene {
     this.playMusicForEra(this.eraIndex);
   }
 
-  private syncInventoryFromRegistry(): void {
-    // Convert legacy inventory aliases back into the current typed inventory.
+  
+private syncInventoryFromRegistry(): void {
     const savedInventory = this.registry.get("playerInventory");
+
     if (!savedInventory || typeof savedInventory !== "object") {
-      return;
+        return;
     }
 
-    const legacyInventory = savedInventory as {
-      latte?: unknown;
-      lana?: unknown;
-      formaggio?: unknown;
-      coperte?: unknown;
-      lvlCesoie?: unknown;
-      lvlSecchi?: unknown;
-      milk?: unknown;
-      wool?: unknown;
-      shearsLevel?: unknown;
-      milkBucketLevel?: unknown;
-    };
-
-    if (typeof legacyInventory.milk === "number") {
-      this.inventory.milk = legacyInventory.milk;
-    } else if (typeof legacyInventory.latte === "number") {
-      this.inventory.milk = legacyInventory.latte;
-    }
-    if (typeof legacyInventory.wool === "number") {
-      this.inventory.wool = legacyInventory.wool;
-    } else if (typeof legacyInventory.lana === "number") {
-      this.inventory.wool = legacyInventory.lana;
-    }
-    if (typeof legacyInventory.formaggio === "number") {
-      this.inventory.formaggio = legacyInventory.formaggio;
-    }
-    if (typeof legacyInventory.coperte === "number") {
-      this.inventory.coperte = legacyInventory.coperte;
-    }
-    if (typeof legacyInventory.shearsLevel === "number") {
-      this.inventory.shearsLevel = legacyInventory.shearsLevel;
-    } else if (typeof legacyInventory.lvlCesoie === "number") {
-      this.inventory.shearsLevel = legacyInventory.lvlCesoie;
-    }
-    if (typeof legacyInventory.milkBucketLevel === "number") {
-      this.inventory.milkBucketLevel = legacyInventory.milkBucketLevel;
-    } else if (typeof legacyInventory.lvlSecchi === "number") {
-      this.inventory.milkBucketLevel = legacyInventory.lvlSecchi;
-    }
-
-    this.inventory.latte = this.inventory.milk;
-    this.inventory.lana = this.inventory.wool;
-    this.inventory.lvlCesoie = this.inventory.shearsLevel;
-    this.inventory.lvlSecchi = this.inventory.milkBucketLevel;
-  }
+    Object.assign(this.inventory, savedInventory);
+  } 
 
   private shearSheep(time: number): void {
     // Shearing is gated by cooldown, distance, tool ownership, and wool readiness.

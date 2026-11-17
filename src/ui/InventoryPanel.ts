@@ -6,7 +6,7 @@ export function formatInventory(
 ): string {
   return [
     `${currencyLabel}: ${inventory.coins}`,
-    `Materials - Milk: ${inventory.milk} | Wool: ${inventory.wool} | Cheese: ${inventory.formaggio} | Blankets: ${inventory.coperte}`,
+    `Materials - Milk: ${inventory.milk} | Wool: ${inventory.wool} | Cheese: ${inventory.cheese} | Blankets: ${inventory.blankets}`,
     `Sheep: ${inventory.sheep}`,
     `Tools - Bucket Lv.${inventory.milkBucketLevel} | Shears Lv.${inventory.shearsLevel}`,
   ].join("\n");

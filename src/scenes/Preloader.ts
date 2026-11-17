@@ -1,4 +1,4 @@
-//importiamo la classe GameData
+// Import GameData.
 import { GameData } from "../GameData";
 import WebFontFile from '../scenes/webFontFile';
 
@@ -70,9 +70,9 @@ export default class Preloader extends Phaser.Scene {
           duration: 500,
           onComplete: () => {
 
-            //fermiamo la scena corrente
+            // Stop the current scene.
             this.scene.stop("Preloader");
-            //richiamiamo il metodo start della far partire la scena Intro
+            // Start the Intro scene.
             this.scene.start("Intro");
 
           },

@@ -1,7 +1,15 @@
 import Phaser from "phaser";
 
+export interface PlayerMovementKeys {
+  up: Phaser.Input.Keyboard.Key;
+  down: Phaser.Input.Keyboard.Key;
+  left: Phaser.Input.Keyboard.Key;
+  right: Phaser.Input.Keyboard.Key;
+}
+
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   private readonly speed = 200;
+  private lastDirection: "up" | "down" | "left" | "right" = "down";
 
   constructor(
     scene: Phaser.Scene,
@@ -16,24 +24,43 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.setCollideWorldBounds(true);
   }
 
-  public move(cursors: Phaser.Types.Input.Keyboard.CursorKeys): void {
+  public move(
+    cursors: Phaser.Types.Input.Keyboard.CursorKeys,
+    movementKeys?: PlayerMovementKeys,
+  ): void {
     const body = this.body as Phaser.Physics.Arcade.Body;
     body.setVelocity(0);
 
-    if (cursors.left.isDown) {
-      body.setVelocityX(-this.speed);
-    } else if (cursors.right.isDown) {
-      body.setVelocityX(this.speed);
-    }
+    const leftPressed = cursors.left.isDown || movementKeys?.left.isDown === true;
+    const rightPressed = cursors.right.isDown || movementKeys?.right.isDown === true;
+    const upPressed = cursors.up.isDown || movementKeys?.up.isDown === true;
+    const downPressed = cursors.down.isDown || movementKeys?.down.isDown === true;
 
-    if (cursors.up.isDown) {
-      body.setVelocityY(-this.speed);
-    } else if (cursors.down.isDown) {
-      body.setVelocityY(this.speed);
+    let velocityX = 0;
+    let velocityY = 0;
+    if (leftPressed) velocityX -= 1;
+    if (rightPressed) velocityX += 1;
+    if (upPressed) velocityY -= 1;
+    if (downPressed) velocityY += 1;
+
+    if (velocityX !== 0 || velocityY !== 0) {
+      const length = Math.hypot(velocityX, velocityY);
+      body.setVelocity(
+        (velocityX / length) * this.speed,
+        (velocityY / length) * this.speed,
+      );
+
+      if (Math.abs(body.velocity.x) >= Math.abs(body.velocity.y)) {
+        this.lastDirection = body.velocity.x > 0 ? "right" : "left";
+      } else {
+        this.lastDirection = body.velocity.y > 0 ? "down" : "up";
+      }
     }
 
     if (body.velocity.length() > 0) {
-      body.velocity.normalize().scale(this.speed);
+      this.anims.play(`player-walk-${this.lastDirection}`, true);
+    } else {
+      this.anims.play(`player-idle-${this.lastDirection}`, true);
     }
   }
 }

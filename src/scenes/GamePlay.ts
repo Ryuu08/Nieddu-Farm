@@ -138,6 +138,7 @@ export default class GamePlay extends Phaser.Scene {
     this.physics.add.collider(this.player, this.signGroup);
     this.physics.add.collider(this.sheepGroup, this.signGroup);
     this.physics.add.collider(this.player, this.laboratoryGroup);
+    this.physics.add.collider(this.sheepGroup, this.laboratoryGroup);
     this.createMapBoundaries();
     // Create the visual and collision objects for the starting era.
     this.spawnEraWorldObjects(this.eraIndex);
@@ -1005,11 +1006,11 @@ private inventoryResetToDefault(): void {
   }
 
   private createLaboratoryHitboxes(): void {
-    const laboratoryHitbox = this.add.zone(640, 300, 100, 80);
+    const laboratoryHitbox = this.add.zone(640, 400, 100, 120);
 
     this.physics.add.existing(laboratoryHitbox, true);
 
-    this.physics.add.overlap(this.player, laboratoryHitbox,() => {
+    this.physics.add.overlap(this.player, laboratoryHitbox, () => {
             // Interazione con il laboratorio
             this.isNearLaboratory = true;
         }

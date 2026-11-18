@@ -7,7 +7,7 @@ export function createDefaultInventory(): PlayerInventory {
         wool: 0,
         cheese: 0,
         blankets: 0,
-        sheep: 1,
+        sheep: 2,
         blackSheep: 0,
         milkBucketLevel: 0,
         shearsLevel: 0,

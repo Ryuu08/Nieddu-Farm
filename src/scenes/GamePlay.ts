@@ -19,6 +19,7 @@ export default class GamePlay extends Phaser.Scene {
   private eraKey!: Phaser.Input.Keyboard.Key;
   private continueEraKey!: Phaser.Input.Keyboard.Key;
   private escapeKey!: Phaser.Input.Keyboard.Key;
+  private laboratoryGroup!: Phaser.Physics.Arcade.StaticGroup;
 
   // Current era state and the visual/audio objects that represent it.
   private eraIndex = 0;
@@ -57,6 +58,8 @@ export default class GamePlay extends Phaser.Scene {
 
   // Transition and sheep AI state.
   private isEraTransitioning = false;
+  private isNearLaboratory = false;
+  private isNearSign = false;
   private sheepMoveTimer = 0;
   private readonly eraNarratorKeys = [
     "era-narrator-nuragica",
@@ -129,15 +132,17 @@ export default class GamePlay extends Phaser.Scene {
     this.physics.add.collider(this.sheepGroup, this.sheepGroup);
     this.decorationGroup = this.physics.add.staticGroup();
     this.signGroup = this.physics.add.staticGroup();
+    this.laboratoryGroup = this.physics.add.staticGroup();
     this.physics.add.collider(this.player, this.decorationGroup);
     this.physics.add.collider(this.sheepGroup, this.decorationGroup);
     this.physics.add.collider(this.player, this.signGroup);
     this.physics.add.collider(this.sheepGroup, this.signGroup);
+    this.physics.add.collider(this.player, this.laboratoryGroup);
     this.createMapBoundaries();
     // Create the visual and collision objects for the starting era.
     this.spawnEraWorldObjects(this.eraIndex);
+    this.createLaboratoryHitboxes();
     this.spawnSheep(500, 360);
-    this.spawnSheep(500, 390);
 
     // Keyboard controls preserve the legacy WASD and arrow-key layout.
     this.cursors = this.input.keyboard!.createCursorKeys();
@@ -199,6 +204,24 @@ export default class GamePlay extends Phaser.Scene {
     this.updateSheepProduction(delta);
     this.updateDayNight(delta);
 
+    // Check if the player is near the current laboratory.
+    const distance = Phaser.Math.Distance.Between(
+    this.player.x,
+    this.player.y,
+    this.currentLaboratory.x,
+    this.currentLaboratory.y
+    );
+    this.isNearLaboratory = distance < 100;
+
+    // Check if the player is near the current sign.
+    const distance1 = Phaser.Math.Distance.Between(
+    this.player.x,
+    this.player.y,
+    this.currentSign.x,
+    this.currentSign.y
+    );
+    this.isNearSign = distance1 < 100;
+
     // E collects milk from the nearest sheep in range.
     if (Phaser.Input.Keyboard.JustDown(this.interactKey)) {
       this.collectProducts();
@@ -215,15 +238,25 @@ export default class GamePlay extends Phaser.Scene {
     }
 
     // Store and laboratory are overlay scenes, so gameplay is paused underneath.
-    if (Phaser.Input.Keyboard.JustDown(this.storeKey)) {
+    if (Phaser.Input.Keyboard.JustDown(this.storeKey) && this.isNearSign) {
       this.scene.pause("GamePlay");
       this.scene.launch("Store");
     }
 
-    if (Phaser.Input.Keyboard.JustDown(this.laboratoryKey)) {
+    if (Phaser.Input.Keyboard.JustDown(this.laboratoryKey) && this.isNearLaboratory) {
       this.scene.pause("GamePlay");
       this.scene.launch("Laboratory");
+    } 
+
+    const sheepCount = this.sheepGroup.countActive(true);
+    
+    if (sheepCount < this.inventory.sheep) {
+      // const spawnX = Phaser.Math.Between(100, 1180);
+      // const spawnY = Phaser.Math.Between(100, 700);
+      this.spawnSheep(500, 360);
     }
+    
+    this.events.on("resume", this.syncSheepCount, this);
 
     this.syncHud();
   }
@@ -253,6 +286,18 @@ export default class GamePlay extends Phaser.Scene {
     ).setDepth(1000);
 
   }
+
+  private syncSheepCount(): void {
+    const sheepCount = this.sheepGroup.countActive(true);
+    const missingSheep = this.inventory.sheep - sheepCount;
+
+    for (let i = 0; i < missingSheep; i++) {
+        const spawnX = Phaser.Math.Between(100, 1180);
+        const spawnY = Phaser.Math.Between(100, 700);
+
+        this.spawnSheep(spawnX, spawnY);
+    }
+}
 
   private createMapBoundaries(): void {
     // Keep every actor ten pixels inside the visible map edge.
@@ -443,9 +488,25 @@ export default class GamePlay extends Phaser.Scene {
 
     // The laboratory is visual here; the L key opens the existing Laboratory scene.
     const laboratory = this.add.image(294, 207, this.eraLaboratoryKeys[eraIndex])
-      .setOrigin(0.5)
-      .setScale(0.22)
-      .setDepth(4);
+    .setOrigin(0.5)
+    .setScale(0.22)
+    .setDepth(4);
+
+      // Aggiunge il laboratorio al gruppo con corpo fisico
+    this.laboratoryGroup.add(laboratory);
+
+      // Regola la hitbox del laboratorio
+    const laboratoryBody = laboratory.body as Phaser.Physics.Arcade.StaticBody;
+
+    const laboratoryWidth = laboratory.displayWidth * 0.6;
+    const laboratoryHeight = laboratory.displayHeight * 0.5;
+
+    laboratoryBody.setSize(laboratoryWidth, laboratoryHeight);
+    laboratoryBody.setOffset(
+        (laboratory.displayWidth - laboratoryWidth) / 2,
+        (laboratory.displayHeight - laboratoryHeight) / 2 + 20
+    );
+
     this.currentLaboratory = laboratory;
 
     // The sign marks the shop area and also participates in physics collisions.
@@ -941,5 +1002,17 @@ private inventoryResetToDefault(): void {
 
     // Avvia la schermata Game Over
     this.scene.start("GameOver");
-}
+  }
+
+  private createLaboratoryHitboxes(): void {
+    const laboratoryHitbox = this.add.zone(640, 300, 100, 80);
+
+    this.physics.add.existing(laboratoryHitbox, true);
+
+    this.physics.add.overlap(this.player, laboratoryHitbox,() => {
+            // Interazione con il laboratorio
+            this.isNearLaboratory = true;
+        }
+    );
+  }
 }

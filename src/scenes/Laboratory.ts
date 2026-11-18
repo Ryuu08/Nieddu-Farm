@@ -1,3 +1,6 @@
+import { createDefaultInventory } from "../systems/InventorySystem";
+import { PlayerInventory } from "../types/Inventory";
+
 export default class Laboratory extends Phaser.Scene {
     private background!: Phaser.GameObjects.Image;
     private panel!: Phaser.GameObjects.Container;
@@ -14,26 +17,17 @@ export default class Laboratory extends Phaser.Scene {
     }
 
     init(): void {
-        // Copy the data from the registry when entering the scene.
-        const saved = this.registry.get("playerInventory");
-        if (saved) {
-            this.playerInventory = { ...saved };
-        } else {
-            // Use a fallback when no inventory exists yet.
-            this.playerInventory = {
-                formaggio: 0,
-                coperte: 0,
-                lana: 0,
-                latte: 0,
-                cesoie: 0,
-                secchi: 0,
-                pecore: 0,
-                pecoreNere: 0,
-            };
-        }
+    const saved = this.registry.get("playerInventory") as PlayerInventory | undefined;
 
-        this.normalizeInventoryAliases();
+    if (saved) {
+        // Usa lo stesso inventario condiviso con GamePlay
+        this.playerInventory = saved;
+    } else {
+        // Crea un inventario iniziale
+        this.playerInventory = createDefaultInventory();
+        this.registry.set("playerInventory", this.playerInventory);
     }
+}
 
     preload(): void {
         // The store background is loaded centrally through GameData.
@@ -259,50 +253,52 @@ export default class Laboratory extends Phaser.Scene {
 
     private produceCheese(): void {
         // 2 milk -> 1 cheese.
-        if (this.playerInventory.latte < 2) {
+        if (this.playerInventory.milk < 2) {
             this.showMessage("LATTE INSUFFICIENTE!", 0xff0000);
             return;
         }
-        this.playerInventory.latte -= 2;
-        this.playerInventory.milk = this.playerInventory.latte;
-        this.playerInventory.formaggio += 1;
+        this.playerInventory.milk -= 2;
+        this.playerInventory.milk = this.playerInventory.milk;
+        this.playerInventory.cheese += 1;
         this.persistInventory();
         this.showMessage("FORMAGGIO PRODOTTO!", 0x00aa00);
     }
 
     private produceBlanket(): void {
         // 1 wool -> 1 blanket.
-        if (this.playerInventory.lana < 1) {
+        if (this.playerInventory.wool < 1) {
             this.showMessage("LANA INSUFFICIENTE!", 0xff0000);
             return;
         }
-        this.playerInventory.lana -= 1;
-        this.playerInventory.wool = this.playerInventory.lana;
-        this.playerInventory.coperte += 1;
+        this.playerInventory.wool -= 1;
+        this.playerInventory.wool = this.playerInventory.wool;
+        this.playerInventory.blankets += 1;
         this.persistInventory();
         this.showMessage("COPERTA PRODOTTA!", 0x00aa00);
     }
 
     private normalizeInventoryAliases(): void {
-        if (!Number.isFinite(this.playerInventory.latte)) {
-            this.playerInventory.latte = Number.isFinite(this.playerInventory.milk)
+        if (!Number.isFinite(this.playerInventory.milk)) {
+            this.playerInventory.milk = Number.isFinite(this.playerInventory.milk)
                 ? this.playerInventory.milk
                 : 0;
         }
-        if (!Number.isFinite(this.playerInventory.lana)) {
-            this.playerInventory.lana = Number.isFinite(this.playerInventory.wool)
+        if (!Number.isFinite(this.playerInventory.wool)) {
+            this.playerInventory.wool = Number.isFinite(this.playerInventory.wool)
                 ? this.playerInventory.wool
                 : 0;
         }
-        if (!Number.isFinite(this.playerInventory.formaggio)) {
-            this.playerInventory.formaggio = 0;
+        if (!Number.isFinite(this.playerInventory.cheese)) {
+            this.playerInventory.cheese = 0;
         }
-        if (!Number.isFinite(this.playerInventory.coperte)) {
-            this.playerInventory.coperte = 0;
+        if (!Number.isFinite(this.playerInventory.blankets)) {
+            this.playerInventory.blankets = 0;
         }
 
-        this.playerInventory.milk = this.playerInventory.latte;
-        this.playerInventory.wool = this.playerInventory.lana;
+        this.playerInventory.milk = this.playerInventory.milk;
+        this.playerInventory.wool = this.playerInventory.wool;
+        this.playerInventory.cheese = this.playerInventory.cheese;
+        this.playerInventory.blankets = this.playerInventory.blankets;
     }
 
     private persistInventory(): void {
@@ -313,15 +309,15 @@ export default class Laboratory extends Phaser.Scene {
     }
 
     private refreshInventoryText(): void {
-        // Always show 0 when the value is undefined or NaN.
-        const latte = Number.isFinite(this.playerInventory.latte) ? this.playerInventory.latte : 0;
-        const lana = Number.isFinite(this.playerInventory.lana) ? this.playerInventory.lana : 0;
-        const formaggio = Number.isFinite(this.playerInventory.formaggio) ? this.playerInventory.formaggio : 0;
-        const coperte = Number.isFinite(this.playerInventory.coperte) ? this.playerInventory.coperte : 0;
-        this.inventoryText.setText(
-            `LATTE: ${latte}   LANA: ${lana}   FORMAGGIO: ${formaggio}   COPERTE: ${coperte}`
-        );
-    }
+    const milk = Number.isFinite(this.playerInventory.milk) ? this.playerInventory.milk : 0;
+    const wool = Number.isFinite(this.playerInventory.wool) ? this.playerInventory.wool : 0;
+    const cheese = Number.isFinite(this.playerInventory.cheese) ? this.playerInventory.cheese : 0;
+    const blankets = Number.isFinite(this.playerInventory.blankets) ? this.playerInventory.blankets : 0;
+
+    this.inventoryText.setText(
+        `MILK: ${milk}   WOOL: ${wool}   CHEESE: ${cheese}   BLANKETS: ${blankets}`
+    );
+}
 
     private showMessage(text: string, color: number): void {
         const { width, height } = this.cameras.main;

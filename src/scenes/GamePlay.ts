@@ -406,7 +406,7 @@ export default class GamePlay extends Phaser.Scene {
     }
 
     const narratorEraIndex = (this.eraIndex - 1 + ERAS.length) % ERAS.length;
-    const narrator = this.add.image(270, 50, this.eraNarratorKeys[narratorEraIndex])
+    const narrator = this.add.image(270, this.scale.height/2, this.eraNarratorKeys[narratorEraIndex])
       .setDisplaySize(190, 190);
 
     const title = this.add.text(640, 150, `${previousEraName}  ->  ${eraName}`, {

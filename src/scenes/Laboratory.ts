@@ -381,8 +381,10 @@ export default class Laboratory extends Phaser.Scene {
 
     private close(): void {
         if (this.scene.isPaused("GamePlay")) {
+            this.scene.setVisible(true, "Hud");
             this.scene.resume("GamePlay");
         }
+        this.scene.setVisible(true, "Hud");
         this.scene.stop("Laboratory");
     }
 }

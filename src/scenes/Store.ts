@@ -765,10 +765,12 @@ export default class Store extends Phaser.Scene {
 
         // Resume GamePlay if paused.
         if (this.scene.isPaused("GamePlay")) {
+            this.scene.setVisible(true, "Hud");
             this.scene.resume("GamePlay");
         }
 
         // Close store.
+        this.scene.setVisible(true, "Hud");
         this.scene.stop("Store");
     }
 }

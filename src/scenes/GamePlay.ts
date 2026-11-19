@@ -241,7 +241,9 @@ export default class GamePlay extends Phaser.Scene {
     // Store and laboratory are overlay scenes, so gameplay is paused underneath.
     if (Phaser.Input.Keyboard.JustDown(this.storeKey) && this.isNearSign) {
       this.scene.pause("GamePlay");
+      // this.scene.stop("Hud")
       this.scene.launch("Store");
+  
     }
 
     if (Phaser.Input.Keyboard.JustDown(this.laboratoryKey) && this.isNearLaboratory) {

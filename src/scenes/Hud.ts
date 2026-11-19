@@ -13,27 +13,31 @@ export default class Hud extends Phaser.Scene {
   }
 
   create(): void {
-    this.inventoryText = this.add.text(24, 20, "", {
+    this.inventoryText = this.add.text(640, 20, "", {
       color: "#ffffff",
-      backgroundColor: "#31512a",
+      backgroundColor: "rgba(27, 105, 215, 0.5)",
+      align: "center",
       padding: { left: 12, right: 12, top: 8, bottom: 8 },
       fontFamily: "Arial",
       fontSize: "20px",
-    }).setScrollFactor(0).setDepth(10);
+    })
+    .setOrigin(0.5, 0)
+    .setScrollFactor(0)
+    .setDepth(10);
 
     this.statusText = this.add.text(24, 160, "", {
-      color: "#ffffff",
-      backgroundColor: "#76513a",
+      color: "#e20303",
+      backgroundColor: "rgba(27, 105, 215, 0.5)",
       padding: { left: 12, right: 12, top: 8, bottom: 8 },
       fontFamily: "Arial",
       fontSize: "18px",
-    }).setScrollFactor(0).setDepth(10);
-
+     
+    }).setScrollFactor(0).setDepth(10).setVisible(false);
     // Display controls at the beginning of the game.
     this.controlsText = this.add.text(24, 700,
       "CONTROLS\nWASD / ARROWS - Move\nE/F - Collect milk / wool, C/X - Store/Laboratory", {
       color: "#ffffff",
-      backgroundColor: "#191970",
+      backgroundColor: "rgba(27, 105, 215, 0.5)",
       padding: { left: 12, right: 12, top: 8, bottom: 8 },
       fontFamily: "Arial",
       fontSize: "16px",
@@ -41,6 +45,7 @@ export default class Hud extends Phaser.Scene {
     }).setScrollFactor(0).setDepth(10);
 
     this.updateDisplay();
+    
   }
 
   update(): void {
@@ -72,4 +77,12 @@ export default class Hud extends Phaser.Scene {
 
     this.statusText.setText(`${productionStatus} | ${hudMessage}`);
   }
+  public showStatus(message: string): void {
+    this.statusText.setText(message);
+    this.statusText.setVisible(true);
+}
+
+  public hideStatus(): void {
+    this.statusText.setVisible(false);
+}
 }

@@ -108,6 +108,7 @@ export default class GamePlay extends Phaser.Scene {
    * Builds the farm, connects physics colliders, and registers gameplay input.
    */
   create(): void {
+    
     // Restore the last valid era before creating its background and world objects.
     this.loadInitialEraFromRegistry();
     // Reset the temporary shearing cooldown every time the scene is created.
@@ -968,7 +969,7 @@ private rollNightCullCount(): 0 | 1 | 2 {
     return 2;
 }
 
-private eraResetToDefault(): void {
+public eraResetToDefault(): void {
     // Ripristina la prima era
     this.eraIndex = 0;
 
@@ -988,7 +989,7 @@ private eraResetToDefault(): void {
     this.syncHud();
 }
 
-private inventoryResetToDefault(): void {
+public inventoryResetToDefault(): void {
     const defaultInventory = createDefaultInventory();
 
     Object.assign(this.inventory, defaultInventory);

@@ -1,3 +1,5 @@
+import GamePlay from "./GamePlay";
+
 export default class Pause extends Phaser.Scene {
   private escapeKey!: Phaser.Input.Keyboard.Key;
 
@@ -53,6 +55,10 @@ export default class Pause extends Phaser.Scene {
   }
 
   private returnToMenu(): void {
+    const gameplay = this.scene.get("GamePlay") as GamePlay;
+
+  gameplay.eraResetToDefault();
+  gameplay.inventoryResetToDefault();
     this.scene.stop("Pause");
     this.scene.stop("Hud");
     this.scene.stop("GamePlay");

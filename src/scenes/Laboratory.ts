@@ -315,7 +315,7 @@ export default class Laboratory extends Phaser.Scene {
     const blankets = Number.isFinite(this.playerInventory.blankets) ? this.playerInventory.blankets : 0;
 
     this.inventoryText.setText(
-        `MILK: ${milk}   WOOL: ${wool}   CHEESE: ${cheese}   BLANKETS: ${blankets}`
+        `Latte: ${milk}  Lana: ${wool}   Formaggio: ${cheese}   Coperte: ${blankets}`
     );
 }
 

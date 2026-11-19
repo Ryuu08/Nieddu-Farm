@@ -13,38 +13,32 @@ export default class Hud extends Phaser.Scene {
   }
 
   create(): void {
-    this.inventoryText = this.add.text(640, 20, "", {
+    this.inventoryText = this.add.text(640, 780, "", {
       color: "#ffffff",
       backgroundColor: "rgba(27, 105, 215, 0.5)",
       align: "center",
       padding: { left: 12, right: 12, top: 8, bottom: 8 },
       fontFamily: "Arial",
       fontSize: "20px",
-    })
-    .setOrigin(0.5, 0)
-    .setScrollFactor(0)
-    .setDepth(10);
+    }) .setOrigin(0.5, 1) .setScrollFactor(0) .setDepth(10);
 
-    this.statusText = this.add.text(24, 160, "", {
+    this.statusText = this.add.text(24, 20, "", {
       color: "#e20303",
       backgroundColor: "rgba(27, 105, 215, 0.5)",
       padding: { left: 12, right: 12, top: 8, bottom: 8 },
       fontFamily: "Arial",
       fontSize: "18px",
-     
-    }).setScrollFactor(0).setDepth(10).setVisible(false);
+    }).setScrollFactor(0) .setDepth(10) .setVisible(false);
     // Display controls at the beginning of the game.
-    this.controlsText = this.add.text(24, 700,
-      "CONTROLS\nWASD / Freccie - Muovi\nF/E - Raccogli latte / Lana, C/X - Store/Laboratorio", {
-      color: "#ffffff",
-      backgroundColor: "rgba(27, 105, 215, 0.5)",
-      padding: { left: 12, right: 12, top: 8, bottom: 8 },
-      fontFamily: "Arial",
-      fontSize: "16px",
-      lineSpacing: 4,
-    }).setScrollFactor(0).setDepth(10);
-
-    this.updateDisplay();
+    this.controlsText = this.add.text(24, 20,
+  "CONTROLS\nWASD / Freccie - Muovi\nF/E - Raccogli latte / Lana, C/X - Store/Laboratorio", {
+    color: "#ffffff",
+    backgroundColor: "rgba(27, 105, 215, 0.5)",
+    padding: { left: 12, right: 12, top: 8, bottom: 8 },
+    fontFamily: "Arial",
+    fontSize: "16px",
+    lineSpacing: 4,
+  }).setScrollFactor(0).setDepth(10).setOrigin(0, 0);
     
   }
 
